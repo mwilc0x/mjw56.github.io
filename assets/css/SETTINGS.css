@@ -1,0 +1,76 @@
+/*
+  INSTRUCTIONS
+
+  You will find here features that you can enable and disable as well as other
+  theme customization options.
+
+  If you wish to add your own styles please add them to CUSTOM.css,
+  this is a blank stylesheet that is loaded last so it can override any other
+  stylesheet.
+*/
+
+.site-footer.social-links {
+  /*
+    Hide and unhide social media links
+
+    set "display: none;" to hide
+    and remove "display: none;" to show
+  */
+
+  /* display: none; */
+}
+
+.search {
+  /*
+    Hide and unhide search feature
+
+    set "display: none;" to hide
+    and remove "display: none;" to show
+  */
+
+  /* display: none; */
+}
+
+
+.blog-logo {
+  /*
+    Default blog logo background is none, change it to another color here;
+  */
+
+  /* background: black; */
+    /** or **/
+  /* background: white; */
+    /** naanaana **/
+}
+
+
+#navigation {
+  /* Uncomment the following line to hide the entire navigation  */
+  /* display: none; */
+
+  /* ICON COLOR */
+  /* Light (default) */
+
+  /* Dark */
+  /* color: #263238; */
+}
+
+/*
+  Show or hide individual default navigation links
+*/
+
+#nav-home {
+  /* display:none; */
+}
+
+#nav-about {
+  /* display:none; */
+}
+
+#nav-contact {
+  /* display:none; */
+}
+
+#scroll-top {
+  /* display: none !important; */
+}

@@ -1,21 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-    <title>Welcome to Ghost</title>
-    <meta name="description" content="" />
+  <title>Welcome to Ghost</title>
+  <meta name="description" content="" />
 
-    <meta name="HandheldFriendly" content="True" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="shortcut icon" href="../favicon.ico">
+  <link rel="shortcut icon" href="../favicon.ico">
 
-    <link rel="stylesheet" type="text/css" href="../assets/css/screen.css" />
-    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+  <link rel="stylesheet" href="../assets/css/font-awesome.min.css" charset="utf-8">
 
-    <link rel="canonical" href="index.html" />
+  <link href='http://fonts.googleapis.com/css?family=Roboto:400,400italic,300,300italic,500,500italic' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" type="text/css" href="../assets/css/screen.css" charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="../assets/css/color.css" charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="../assets/css/SETTINGS.css" charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="../assets/css/CUSTOM.css" charset="utf-8">
+
+  <link rel="canonical" href="index.html" />
     
     <meta property="og:site_name" content="Mike&#39;s Musings" />
     <meta property="og:type" content="article" />
@@ -57,29 +63,68 @@
 </head>
 <body class="post-template tag-getting-started">
 
-    
+  
+  <div id="navigation" class="btn-float">
+    <a href="index.html#">
+      <i class="fa fa-bars fa-lg"></i>
+    </a>
+    <ul class="navigation-options card">
+      <li id="nav-home" class="unstyled">
+        <a href="../index.html">
+          <i class="fa fa-home fa-fw"></i> Home
+        </a>
+      </li>
+      <li id="nav-about" class="unstyled">
+        <a href="http://localhost:2368/about">
+          <i class="fa fa-info-circle fa-fw"></i> About
+        </a>
+      </li>
+      <li id="nav-contact" class="unstyled">
+        <a href="http://localhost:2368/contact">
+          <i class="fa fa-envelope fa-fw"></i> Contact
+        </a>
+      </li>
+    </ul>
+  </div>
 
+  
 
-<header class="main-header post-head no-cover">
-    <nav class="main-nav  clearfix">
-        <a class="back-button icon-arrow-left" href="../index.html">Home</a>
-        <a class="subscribe-button icon-feed" href="../rss/index.html">Subscribe</a>
-    </nav>
+<link rel="stylesheet" type="text/css" href="../assets/css/tomorrow.css">
+
+<header class="site-head" style="background-image: url(../content/images/2014/10/cover.png)">
+  <div class="vertical">
+    <div class="site-head-content inner">
+
+      <a class="blog-logo fade-in one" href="../index.html">
+        <img src="../content/images/2014/10/hubble-1.jpg" alt="Blog Logo" class="">
+      </a>
+
+    </div>
+  </div>
 </header>
+<a class="subscribe-button icon-feed btn-float" href="../rss/index.html"></a>
+
+<div id="header-spacer"></div>
 
 <main class="content" role="main">
 
-    <article class="post tag-getting-started">
+  <article class="post tag-getting-started">
 
-        <header class="post-header">
-            <h1 class="post-title">Welcome to Ghost</h1>
-            <section class="post-meta">
-                <time class="post-date" datetime="2014-10-23">23 October 2014</time>  on <a href="../tag/getting-started/index.html">Getting Started</a>
-            </section>
-        </header>
 
-        <section class="post-content">
-            <p>You're live! Nice. We've put together a little post to introduce you to the Ghost editor and get you started. You can manage your content by signing in to the admin area at <code>&lt;your blog URL&gt;/ghost/</code>. When you arrive, you can select this post from a list on the left and see a preview of it on the right. Click the little pencil icon at the top of the preview to edit this post and read the next section!</p>
+    <header class="post-header">
+      <h1 class="post-title">Welcome to Ghost</h1>
+      <section class="post-meta">
+        <time class="post-date" datetime="2014-10-23">
+          <i class='fa fa-calendar'></i> 23 Oct 2014
+        </time>
+        <span class="pull-right">
+          <i class='fa fa-tags'></i> <a href="../tag/getting-started/index.html">Getting Started</a>
+        </span>
+      </section>
+    </header>
+
+    <section class="post-content">
+      <p>You're live! Nice. We've put together a little post to introduce you to the Ghost editor and get you started. You can manage your content by signing in to the admin area at <code>&lt;your blog URL&gt;/ghost/</code>. When you arrive, you can select this post from a list on the left and see a preview of it on the right. Click the little pencil icon at the top of the preview to edit this post and read the next section!</p>
 
 <h2 id="gettingstarted">Getting Started</h2>
 
@@ -145,59 +190,162 @@
 <p><input type="text" placeholder="I'm an input field!" /></p>
 
 <p>That should be enough to get you started. Have fun - and let us know what you think :)</p>
-        </section>
+    </section>
 
-        <footer class="post-footer">
+    <footer class="post-footer">
 
+      <section class="author">
 
             <figure class="author-image">
-                <a class="img" href="../author/mike/index.html" style="background-image: url(http://www.gravatar.com/avatar/24b41978e9a7a9fa51b8cb52bc0966b8?d=404&amp;s=250)"><span class="hidden">Mike Wilcox's Picture</span></a>
+            <A class="img" href="../author/mike/index.html" style="background-image: url(http://www.gravatar.com/avatar/24b41978e9a7a9fa51b8cb52bc0966b8?d=404&amp;s=250)"><span class="hidden">Mike Wilcox's Picture</span></a>
             </figure>
 
-            <section class="author">
-                <h4><a href="../author/mike/index.html">Mike Wilcox</a></h4>
+          <section class="author">
+            <h4><a href="../author/mike/index.html">Mike Wilcox</a></h4>
 
-                    <p>Read <a href="../author/mike/index.html">more posts</a> by this author.</p>
-                <div class="author-meta">
-                    
-                    
-                </div>
-            </section>
+              <p>Read <a href="../author/mike/index.html">more posts</a> by this author.</p>
+              <div class="author-meta">
+              
+              
+            </div>
+          </section>
+
+      </section>
+
+      <section class="share">
+        <h4>Share this post</h4>
+        <a class="icon-twitter" href="https://twitter.com/share?text=Welcome%20to%20Ghost&amp;url=http://localhost:2368/welcome-to-ghost/"
+        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+      </a>
+      <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:2368/welcome-to-ghost/"
+      onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+      <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://localhost:2368/welcome-to-ghost/"
+    onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+    <span class="hidden">Google+</span>
+  </a>
+</section>
+
+</footer>
 
 
-            <section class="share">
-                <h4>Share this post</h4>
-                <a class="icon-twitter" href="https://twitter.com/share?text=Welcome%20to%20Ghost&amp;url=http://localhost:2368/welcome-to-ghost/"
-                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
-                    <span class="hidden">Twitter</span>
-                </a>
-                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:2368/welcome-to-ghost/"
-                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
-                    <span class="hidden">Facebook</span>
-                </a>
-                <a class="icon-google-plus" href="https://plus.google.com/share?url=http://localhost:2368/welcome-to-ghost/"
-                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
-                    <span class="hidden">Google+</span>
-                </a>
-            </section>
+<div id="comments">
+  <div id="disqus_thread"></div>
 
-        </footer>
+  <script type="text/javascript">
+  var disqus_shortname = 'demoSpecificidea'; // required: replace example with your forum shortname
+  var disqus_identifier = '1'; // make sure to use the post.id as an identifier, otherwise disqus will use the pages url per default, which might be problematic...
 
-    </article>
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+  </script>
+
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+</article>
 
 </main>
 
+<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
 
 
-    <footer class="site-footer clearfix">
-         <section class="copyright"><a href="../index.html">Mike&#x27;s Musings</a> &copy; 2014</section>
-         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
-    </footer>
+  <!-- <div class="clearfix"></div> -->
 
-    <script src="../public/jquery.js"></script>
+  <div id="scroll-top" class="pull-right">
+    <i class="fa fa-arrow-up fa-fw"></i>
+  </div>
 
-    <script type="text/javascript" src="../assets/js/jquery.fitvids.js"></script>
-    <script type="text/javascript" src="../assets/js/index.js"></script>
+  <footer class="site-footer search">
+    <form>
+      <input type="text" id="search-field" class="material-text">
+      <button type="submit" value="search" class="material-button"><i class="fa fa-search fa-lg"></i></button>
+    </form>
+    
+    <section id="results"></section>
+  </footer>
+  <footer class="site-footer social-links">
+    <div id="social-links">
+      <!-- TWITTER -->
+      <a href="http://twitter.com" target="_blank">
+        <i class="fa fa-twitter fa-lg"></i>
+        Twitter
+      </a>
+    
+      <!-- space -->
+      &nbsp;
+    
+      <!-- FACEBOOK -->
+      <a href="http://facebook.com" target="_blank">
+        <i class="fa fa-facebook-square fa-lg"></i>
+        Facebook
+      </a>
+    
+      <!-- space -->
+      &nbsp;
+    
+      <!-- INSTAGRAM -->
+      <a href="http://instagram.com" target="_blank">
+        <i class="fa fa-instagram fa-lg"></i>
+        Instagram
+      </a>
+    
+      <!-- space -->
+      &nbsp;
+    
+      <!-- LINKED-IN -->
+      <a href="http://linkedin.com" target="_blank">
+        <i class="fa fa-linkedin-square fa-lg"></i>
+        LinkedIn
+      </a>
+    
+      <!-- space -->
+      &nbsp;
+    
+      <!-- ETC -->
+      <!--
+        To add your own social media icon go to FontAwesome website and look for the social media brand icon you want to add.
+        Note the social media icon name, "fa-NAME".
+        Copy and paste bellow, one of the snipets above, or change any of the social media icons above to use that name.
+      -->
+    
+    </div>
+  </footer>
+  <footer class="site-footer clearfix">
+    <section class="copyright"><a href="../index.html">Mike&#x27;s Musings</a> &copy; 2014</section>
+    <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+  </footer>
 
+  <script src="../public/jquery.js"></script>
+
+  <script type="text/javascript" src="../assets/js/jquery.fitvids.js"></script>
+  <script type="text/javascript" src="../assets/js/velocity.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../assets/js/velocity-ui.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../assets/js/ghostHunter.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../assets/js/images-loaded.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../assets/js/masonry.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../assets/js/color-thief.js" charset="utf-8"></script>
+
+  <script type="text/javascript" src="../assets/js/index.js"></script>
+
+  <script type="text/javascript" src="../assets/js/materiality.js" charset="utf-8"></script>
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-46737559-2', 'auto');
+  ga('send', 'pageview');
+
+  </script>
 </body>
 </html>
