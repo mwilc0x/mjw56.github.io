@@ -29,7 +29,7 @@
     <meta property="og:description" content=" Recently I tried my hand at publishing a package to npm that was written in TypeScript. TypeScript is a nice way to write JavaScript because it has a type system which gives you instant feedback as you write your code..." />
     <meta property="og:url" content="http://localhost:2368/publishing-a-typescript-package-to-npm/" />
     <meta property="article:published_time" content="2014-11-16T02:14:05.115Z" />
-    <meta property="article:modified_time" content="2014-11-16T02:18:59.698Z" />
+    <meta property="article:modified_time" content="2014-11-16T02:42:27.528Z" />
     
     <meta name="twitter:card" content="content" />
     <meta name="twitter:title" content="Publishing a TypeScript package to npm" />
@@ -51,7 +51,7 @@
     "headline": "Publishing a TypeScript package to npm",
     "url": "http://localhost:2368/publishing-a-typescript-package-to-npm/",
     "datePublished": "2014-11-16T02:14:05.115Z",
-    "dateModified": "2014-11-16T02:18:59.698Z",
+    "dateModified": "2014-11-16T02:42:27.528Z",
     "description": " Recently I tried my hand at publishing a package to npm that was written in TypeScript. TypeScript is a nice way to write JavaScript because it has a type system which gives you instant feedback as you write your code"
 }
     </script>
@@ -128,9 +128,9 @@
 
 <p>My module is fairly simply as it is only one class with an external interface I use to define my query object. The module can be found <a href="https://github.com/mjw56/surfsup">here</a>. I am using <a href="http://gulpjs.com/">gulp</a> to automate my build process. I used <a href="https://www.npmjs.org/package/gulp-tsc">gulp-tsc</a> to compile the TypeScript in my gulp compile task. It is very straightforward and did the job well for this simple scenario. The only gotcha I ran into was how was my TypeScript going to compile itself before being sent off to the npm registry? The answer is in the <a href="https://www.npmjs.org/doc/misc/npm-scripts.html">scripts</a> property of the package.json. Inside of there we can do all sorts of awesome magic that will make sure our code is in the right state when a user wants to use our module in their code. Specifically for this use-case I used the prepublish property to run my gulp task to compile my TypeScript:</p>
 
-<pre><code class="prettyprint javascript ">'scripts: {  
+<pre><code class="prettyprint javascript ">'scripts': {  
     'prepublish': 'gulp compile'
-}'
+}
 </code></pre>
 
 <p>Now you're guaranteed that you'll be sending off valid JavaScript to the npm registry. Enjoy!</p>
