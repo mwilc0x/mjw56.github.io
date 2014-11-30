@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[flux - Mike's Musings]]></title><description><![CDATA[Thoughts, stories and ideas.]]></description><link>http://localhost:2368/</link><generator>Ghost 0.5</generator><lastBuildDate>Sun, 30 Nov 2014 17:11:12 GMT</lastBuildDate><atom:link href="http://localhost:2368/tag/flux/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Async Server-Side Communication with the Flux Architecture]]></title><description><![CDATA[<p><img src="http://localhost:2368/content/images/2014/11/react-components-1.png" alt="alt"></p>
+
+<p>I'd like to discuss how one might approach asynchronous interactions between the flux architecture and server-side for doing your typical save, delete, etc. Specifically for my example I'm using the <a href="https://github.com/BinaryMuse/fluxxor">Fluxxor</a> implementation of the flux architecture. You don't have to use fluxxor as you can just stick with <a href="https://github.com/facebook/flux">vanilla flux</a> or choose from one of the many other options out there (<a href="https://github.com/kenwheeler/mcfly">McFly</a>, <a href="https://github.com/spoike/refluxjs">Reflux</a>, <a href="https://github.com/deloreanjs/delorean">DeLorean</a>, <a href="https://github.com/jmreidy/fluxy">Fluxy</a>). I'm using node and mongo on the backend and communicating to it via websockets. It could easily be ASP.NET or any backend of your choosing using ajax. I believe this approach fits nicely within their architecture. If you're not familiar with what the Flux architecture is then go read the <a href="http://facebook.github.io/flux/docs/overview.html">official docs</a>.                 Then, if you're interested in the Fluxxor implementation, hop on over to the <a href="http://fluxxor.com/what-is-flux.html">fluxxor docs</a>. I would advise familiarizing yourself with the overall flow of the flux architecture before continuing.</p>
+
+<p><img src="http://localhost:2368/content/images/2014/11/flux-diagram-white-background.png" alt="alt"></p>
+
+<p>So as you can see from the diagram above, flux concentrates on a single data flow direcion. </p>
+
+<p>In Summary:</p>
+
+<ul>
+<li>The user triggers an event on the UI which the component can respond to with an action creator</li>
+<li>The action creator can "leave the main flux loop" to get/post data to the server. Once this is completed, the action creators can then continue creating an action in response to an event on the UI.</li>
+<li>The action creator dispatches the action via the Dispatcher</li>
+<li>Stores can register with the Dispatcher and provide it a callback which allows the dispatcher to hook into the store for certain events the store is interested in.</li>
+<li>Stores update their state in response to the dispatched action and can then emit a change event which any React component can hear to tell it that something might need to be updated and re-rendered.</li>
+</ul>
+
+<p>For the purpose of this blog post I'll be focusing on step #2 from above. The above steps are my own interpretation of the flux architecture. Obviously it gets a little more complicated when you bring in waitFor to handle stores depending on other stores and things like circular dependencies. But for the purpose of this post I'd like to keep the topic simple and straight to the point. </p>
+
+<p><img src="http://localhost:2368/content/images/2014/11/flux-server.png" alt="alt"></p>
+
+<p>First, I created a services module which strictly handles communicating to the server. It has methods which return Q promises once the communication with the server has completed. Here is a simplified version of what this might look like:</p>
+
+<pre><code class="language-javascript">var socket = require('socket.io-client')('localhost'),  
+    Q = require('q');
+
+var TodoService = {
+
+  addTodo: function(todo) {
+    var defer = Q.defer();
+
+    socket.on('todo-added', function(todo) {
+      defer.resolve(todo);
+    });
+
+    socket.emit('add-todo', todo);
+
+    return defer.promise;
+  },
+
+  loadTodos: function(todos) {
+    var defer = Q.defer();
+
+    socket.on('init-data-payload', function(todos) {
+
+      defer.resolve(todos);
+    });
+
+    socket.emit('get-init-data');
+
+    return defer.promise;
+  }
+
+};
+
+module.exports = TodoService;  
+</code></pre>
+
+<p>Secondly, in my action creators I have them communicate with this service to do any interactions they may need to do with the server. Once the interaction is complete with the server, the promise resolves and the action creator can dispatch the action with the relevant updated data. This might look someting like this:</p>
+
+<pre><code class="language-javascript">var constants = require('../constants/constants'),  
+    service = require('../services/todo-service');
+
+var actions = {  
+  addTodo: function(text) {
+    var _this = this;
+    service.addTodo({text: text}).then(function(todo) {
+      _this.dispatch(constants.ADD_TODO, todo);
+    });
+  },
+
+  loadTodos: function() {
+    var _this = this;
+    service.loadTodos().then(function(todos){
+      _this.dispatch(constants.LOAD_TODOS, todos);
+    });
+  }
+
+};
+
+module.exports = actions;
+</code></pre>
+
+<p>And that is pretty much it. I have seen examples where different actions can be dispatched as a result of different responses from the server. I think this is a really nice approach and as this is an overly simplified implementation I did not include this. This can be useful for when you want to send data down to display a loading screen or some type of success/error messages etc.</p>
+
+<p>I hope you found this post useful. I tried to keep it as simple as possible for the purpose of this post. The full code can be found on my <a href="https://github.com/mjw56/react-components">Github</a>. If you have any questions or comments please feel free to reach out to me on <a href="https://twitter.com/subr0utine">Twitter</a> or in the comments section below. Cheers!</p>]]></description><link>http://localhost:2368/handling-asynchronous-data-flow-in-flux/</link><guid isPermaLink="false">8932a38e-5ae2-4cbe-8d6a-b5f32058a823</guid><category><![CDATA[react]]></category><category><![CDATA[flux]]></category><category><![CDATA[server-side]]></category><dc:creator><![CDATA[Mike Wilcox]]></dc:creator><pubDate>Sun, 30 Nov 2014 16:53:34 GMT</pubDate></item></channel></rss>
