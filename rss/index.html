@@ -1,5 +1,111 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[mike wilcox]]></title><description><![CDATA[mike wilcox]]></description><link>http://localhost:2368/</link><generator>Ghost 0.5</generator><lastBuildDate>Sat, 06 Dec 2014 13:53:34 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Async Server-Side Communication with the Flux Architecture]]></title><description><![CDATA[<p><img src="http://localhost:2368/content/images/2014/11/react-components-1.png" alt="alt"></p>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[mike wilcox]]></title><description><![CDATA[mike wilcox]]></description><link>http://localhost:2368/</link><generator>Ghost 0.5</generator><lastBuildDate>Sun, 07 Dec 2014 23:42:26 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Building UI Components with Om, ClojureScript, and React]]></title><description><![CDATA[<p>Om is a <a href="https://github.com/clojure/clojurescript">ClojureScript</a> interface to Facebook's <a href="https://github.com/facebook/react">React</a>. From their <a href="https://github.com/swannodette/om">github</a>:</p>
+
+<blockquote>
+  <p>Om allows users to represent their UIs simply as <a href="https://github.com/edn-format/edn">EDN</a>. Because ClojureScript data is immutable data, Om can always rapidly re-render the UI from the root. Thus Om UIs are out of the box snapshotable and undoable and these operations have no implementation complexity and little overhead.</p>
+</blockquote>
+
+<p>I'm going to walk through a very simple comments app. It has four main components:</p>
+
+<ul>
+<li>Comments Box</li>
+<li>Comment List</li>
+<li>Comment</li>
+<li>Input</li>
+</ul>
+
+<p>Om uses React under the hood so the components will be written in the standard React notation.</p>
+
+<p>The first thing we want to do is to define our global state model. We'll represent the comments list as a vector of comments which are composed of author and text properties that both as strings:</p>
+
+<pre><code class="language-javascript">(def app-state
+  (atom
+    {:comments {:data [{ :author "Commenter 1" :text "comment 1" }
+                       { :author "Commenter 2" :text "comment 2" }]}}))
+</code></pre>
+
+<p>Next, we'll start building our mini app from the top down. So we'll start at the root node. The root node will take one parameter which will be the app state we just defined above. The root node will have three children: an h2 element, a CommentBox react component, and an Input react component. It will pass the Map from :data into the CommentBox and Input so that they can use that data as they please.</p>
+
+<pre><code class="language-javascript">(defn my-app [global]
+  (reify
+    om/IRender
+    (render [this]
+      (dom/div nil
+               (dom/h2 nil "A mini comments app using clojurescript and react")
+               (om/build CommentBox (:data global))
+               (om/build Input (:data global))))))
+</code></pre>
+
+<p>Next, we'll tackle the CommentBox component. The CommentBox should be very simple, it should only have one child who is a CommentList who takes in the :comments vector from the Immutable Map that we passed to it:</p>
+
+<pre><code class="language-javascript">(defn CommentBox
+  [comments owner]
+  (reify
+    om/IRender
+    (render [_]
+      (dom/div nil
+               (om/build CommentList (:comments comments))))))
+</code></pre>
+
+<p>Pretty simple right? Let's keep going! Naturally the CommentList component will come next. Again, the CommentList should be very simplistic. All that it is going to do is traverse the comments in the :comments vector and output a Comment component for each one. We'll use Om's <a href="https://github.com/swannodette/om/wiki/Documentation#build-all">build-all</a> which will return a sequence of Om components for the comments in the :comments vector:</p>
+
+<pre><code class="language-javascript">(defn CommentList
+  [comments-data]
+  (reify
+    om/IRender
+    (render [_]
+      (dom/div nil
+               (apply
+                 dom/ul nil
+                 (om/build-all Comment comments-data)))))) ;; build-all iterates over a sequence and builds a component for each item
+</code></pre>
+
+<p>And then a leaf node for a CommentBox would be a Comment component. A Comment should be the most minimalistic component yet. It simply takes a single comment object as input from the app state :comments vector and displays the :author and :text fields to the UI. Here is what this code looks like:</p>
+
+<pre><code class="language-javascript">(defn Comment
+  [comment]
+  (reify
+    om/IRender
+    (render [_]
+      (dom/div nil
+               (dom/h2 nil (str (:author comment)) ": " (str (:text comment)))))))
+</code></pre>
+
+<p>Finally, it wouldn't be a very useful little demo if the user could not submit their own comments now would it? Our input component will mainly do two things, it will store the state of the user input and it will add to the comments vector once a user submits the comment. </p>
+
+<pre><code class="language-javascript">(defn handle-change [e owner {:keys [text]}]
+  (om/set-state! owner :text (.. e -target -value)))
+
+(defn handle-submit [e owner {:keys [text]} comments]
+  (println "comments: " @comments)
+  ;; When you trasact! or update!, you need to pass cursor, key(s) where the cursor will be updated and the data/function
+  (om/transact! comments :comments #(conj % {:author "Guest" :text text}))
+  (om/set-state! owner :text ""))
+
+(defn Input
+  [comments owner]
+  (reify
+    om/IInitState
+    (init-state [_]
+      {:text nil})
+    om/IRenderState
+    (render-state [_ state]
+      (dom/div nil
+               (dom/input #js
+                          {:type "text"
+                           :ref "text-field"
+                           :value (:text state)
+                           :onChange (fn [event] (handle-change event owner state))})
+               (dom/button
+                 #js { :onClick (fn [event] (handle-submit event owner state comments))}
+                 "submit")))))
+</code></pre>
+
+<p>As you can see from the above code, the handle-submit function transitions the application state with <a href="https://github.com/swannodette/om/wiki/Documentation#transact">transact!</a> by performing a <a href="https://clojuredocs.org/clojure.core/conj">conj</a> on the :comments vector with the latest comment. It then erases the text input back to empty. </p>
+
+<p>The code for this is <a href="https://github.com/mjw56/cljs-playground">here</a>. It's running using Chestnut. It's pretty rad, <a href="https://github.com/swannodette">David Nolen</a> wrote a <a href="http://swannodette.github.io/2014/10/10/magic/">blog post</a> about it.</p>
+
+<p>Shout out to <a href="https://github.com/annapawlicka">annapawlicka</a> in #clojurescript for helping to explain clojurescript to a total n00b. :) </p>]]></description><link>http://localhost:2368/a-simple-comments-app-with-om/</link><guid isPermaLink="false">85e82333-d5e8-4335-a3ed-60861348acc1</guid><dc:creator><![CDATA[Mike Wilcox]]></dc:creator><pubDate>Sun, 07 Dec 2014 23:39:14 GMT</pubDate></item><item><title><![CDATA[Async Server-Side Communication with the Flux Architecture]]></title><description><![CDATA[<p><img src="http://localhost:2368/content/images/2014/11/react-components-1.png" alt="alt"></p>
 
 <p>I'd like to discuss how one might approach asynchronous interactions between the flux architecture and server-side for doing your typical save, delete, etc. Specifically for my example I'm using the <a href="https://github.com/BinaryMuse/fluxxor">Fluxxor</a> implementation of the flux architecture. You don't have to use fluxxor as you can just stick with <a href="https://github.com/facebook/flux">vanilla flux</a> or choose from one of the many other options out there (<a href="https://github.com/kenwheeler/mcfly">McFly</a>, <a href="https://github.com/spoike/refluxjs">Reflux</a>, <a href="https://github.com/deloreanjs/delorean">DeLorean</a>, <a href="https://github.com/jmreidy/fluxy">Fluxy</a>). I'm using node and mongo on the backend and communicating to it via websockets. It could easily be ASP.NET or any backend of your choosing using ajax. I believe this approach fits nicely within their architecture. If you're not familiar with what the Flux architecture is then go read the <a href="http://facebook.github.io/flux/docs/overview.html">official docs</a>.                 Then, if you're interested in the Fluxxor implementation, hop on over to the <a href="http://fluxxor.com/what-is-flux.html">fluxxor docs</a>. I would advise familiarizing yourself with the overall flow of the flux architecture before continuing.</p>
 

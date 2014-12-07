@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+<title>Building UI Components with Om, ClojureScript, and React</title>
+<link rel="shortcut icon" href="../assets/favicon.png">
+<meta name="description" content="" />
+
+<meta name="twitter:site" content="">
+
+<meta name="twitter:creator" content="">
+
+<meta name="google-site-verification" content="">
+
+<meta property="fb:admins" content="">
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<link rel="stylesheet" type="text/css" href="../assets/css/font-awesome.min.css" />
+<link rel="stylesheet" type="text/css" href="../assets/css/animation.css" />
+<link rel="stylesheet" type="text/css" href="../assets/css/prism.css" />
+
+<meta name="HandheldFriendly" content="True" />
+<meta name="MobileOptimized" content="320" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+<link rel="canonical" href="index.html" />
+    
+    <meta property="og:site_name" content="mike wilcox" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Building UI Components with Om, ClojureScript, and React" />
+    <meta property="og:description" content="Om is a ClojureScript interface to Facebook's React. From their github:   Om allows users to represent their UIs simply as EDN. Because ClojureScript data is immutable data, Om can always rapidly re-render the UI from the root. Thus Om UIs..." />
+    <meta property="og:url" content="http://localhost:2368/a-simple-comments-app-with-om/" />
+    <meta property="article:published_time" content="2014-12-07T23:39:14.906Z" />
+    <meta property="article:modified_time" content="2014-12-07T23:41:40.206Z" />
+    
+    <meta name="twitter:card" content="content" />
+    <meta name="twitter:title" content="Building UI Components with Om, ClojureScript, and React" />
+    <meta name="twitter:description" content="Om is a ClojureScript interface to Facebook's React. From their github:   Om allows users to represent their UIs simply as EDN. Because ClojureScript data is immutable data, Om can always rapidly re-render the UI from the root. Thus Om UIs..." />
+    <meta name="twitter:url" content="http://localhost:2368/a-simple-comments-app-with-om/" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "publisher": "mike wilcox",
+    "author": {
+        "@type": "Person",
+        "name": "Mike Wilcox",
+        "image": "http://localhost:2368//www.gravatar.com/avatar/24b41978e9a7a9fa51b8cb52bc0966b8?d=404&s=250",
+        "url": "http://localhost:2368/author/mike",
+        "sameAs": null
+    },
+    "headline": "Building UI Components with Om, ClojureScript, and React",
+    "url": "http://localhost:2368/a-simple-comments-app-with-om/",
+    "datePublished": "2014-12-07T23:39:14.906Z",
+    "dateModified": "2014-12-07T23:41:40.206Z",
+    "description": "Om is a ClojureScript interface to Facebook's React. From their github:   Om allows users to represent their UIs simply as EDN. Because ClojureScript data is immutable data, Om can always rapidly re-render the UI from the root. Thus Om UIs"
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.5" />
+    <link rel="alternate" type="application/rss+xml" title="mike wilcox" href="../rss/index.html" />
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-XXXXXXXX-X'); // Paste your Google Analytics ID here.
+    ga('send', 'pageview');
+</script>
+</head>
+
+<body class="post-template">
+
+
+<header role='banner' class="site-head_digitus wrapper_digitus fade_digitus">
+        <a class="logo_digitus" href="../index.html"><img src="../content/images/2014/10/hubble-1.jpg" alt="mike wilcox" /></a>
+    <h1 class="blogtitle_digitus">
+        <a title="mike wilcox" href='../index.html'>
+            mike wilcox
+        </a>
+    </h1>
+</header>
+
+
+<main class="wrapper_digitus" role="main">
+    
+	
+    <article class="article_digitus">
+	
+		<header class="postheader_digitus">
+            <h1 class="posttitle_digitus">Building UI Components with Om, ClojureScript, and React</h1>
+            <span>by</span><h4 class="authorname_digitus"><a href="../author/mike/index.html">Mike Wilcox</a></h4>
+            <hr class="pause" />
+			<ul>
+				<li><i class="fa fa-calendar"></i><time class="date_digitus" >Sunday 07 Dec 2014</time></li>
+                <li><i class="fa fa-comments"></i><a class="comments_digitus" href="index.html#disqus_thread" data-disqus-identifier="6">Comments</a></li>
+			</ul>
+		</header>
+	
+		<div class="postcontent_digitus">
+			<p>Om is a <a href="https://github.com/clojure/clojurescript">ClojureScript</a> interface to Facebook's <a href="https://github.com/facebook/react">React</a>. From their <a href="https://github.com/swannodette/om">github</a>:</p>
+
+<blockquote>
+  <p>Om allows users to represent their UIs simply as <a href="https://github.com/edn-format/edn">EDN</a>. Because ClojureScript data is immutable data, Om can always rapidly re-render the UI from the root. Thus Om UIs are out of the box snapshotable and undoable and these operations have no implementation complexity and little overhead.</p>
+</blockquote>
+
+<p>I'm going to walk through a very simple comments app. It has four main components:</p>
+
+<ul>
+<li>Comments Box</li>
+<li>Comment List</li>
+<li>Comment</li>
+<li>Input</li>
+</ul>
+
+<p>Om uses React under the hood so the components will be written in the standard React notation.</p>
+
+<p>The first thing we want to do is to define our global state model. We'll represent the comments list as a vector of comments which are composed of author and text properties that both as strings:</p>
+
+<pre><code class="language-javascript">(def app-state
+  (atom
+    {:comments {:data [{ :author "Commenter 1" :text "comment 1" }
+                       { :author "Commenter 2" :text "comment 2" }]}}))
+</code></pre>
+
+<p>Next, we'll start building our mini app from the top down. So we'll start at the root node. The root node will take one parameter which will be the app state we just defined above. The root node will have three children: an h2 element, a CommentBox react component, and an Input react component. It will pass the Map from :data into the CommentBox and Input so that they can use that data as they please.</p>
+
+<pre><code class="language-javascript">(defn my-app [global]
+  (reify
+    om/IRender
+    (render [this]
+      (dom/div nil
+               (dom/h2 nil "A mini comments app using clojurescript and react")
+               (om/build CommentBox (:data global))
+               (om/build Input (:data global))))))
+</code></pre>
+
+<p>Next, we'll tackle the CommentBox component. The CommentBox should be very simple, it should only have one child who is a CommentList who takes in the :comments vector from the Immutable Map that we passed to it:</p>
+
+<pre><code class="language-javascript">(defn CommentBox
+  [comments owner]
+  (reify
+    om/IRender
+    (render [_]
+      (dom/div nil
+               (om/build CommentList (:comments comments))))))
+</code></pre>
+
+<p>Pretty simple right? Let's keep going! Naturally the CommentList component will come next. Again, the CommentList should be very simplistic. All that it is going to do is traverse the comments in the :comments vector and output a Comment component for each one. We'll use Om's <a href="https://github.com/swannodette/om/wiki/Documentation#build-all">build-all</a> which will return a sequence of Om components for the comments in the :comments vector:</p>
+
+<pre><code class="language-javascript">(defn CommentList
+  [comments-data]
+  (reify
+    om/IRender
+    (render [_]
+      (dom/div nil
+               (apply
+                 dom/ul nil
+                 (om/build-all Comment comments-data)))))) ;; build-all iterates over a sequence and builds a component for each item
+</code></pre>
+
+<p>And then a leaf node for a CommentBox would be a Comment component. A Comment should be the most minimalistic component yet. It simply takes a single comment object as input from the app state :comments vector and displays the :author and :text fields to the UI. Here is what this code looks like:</p>
+
+<pre><code class="language-javascript">(defn Comment
+  [comment]
+  (reify
+    om/IRender
+    (render [_]
+      (dom/div nil
+               (dom/h2 nil (str (:author comment)) ": " (str (:text comment)))))))
+</code></pre>
+
+<p>Finally, it wouldn't be a very useful little demo if the user could not submit their own comments now would it? Our input component will mainly do two things, it will store the state of the user input and it will add to the comments vector once a user submits the comment. </p>
+
+<pre><code class="language-javascript">(defn handle-change [e owner {:keys [text]}]
+  (om/set-state! owner :text (.. e -target -value)))
+
+(defn handle-submit [e owner {:keys [text]} comments]
+  (println "comments: " @comments)
+  ;; When you trasact! or update!, you need to pass cursor, key(s) where the cursor will be updated and the data/function
+  (om/transact! comments :comments #(conj % {:author "Guest" :text text}))
+  (om/set-state! owner :text ""))
+
+(defn Input
+  [comments owner]
+  (reify
+    om/IInitState
+    (init-state [_]
+      {:text nil})
+    om/IRenderState
+    (render-state [_ state]
+      (dom/div nil
+               (dom/input #js
+                          {:type "text"
+                           :ref "text-field"
+                           :value (:text state)
+                           :onChange (fn [event] (handle-change event owner state))})
+               (dom/button
+                 #js { :onClick (fn [event] (handle-submit event owner state comments))}
+                 "submit")))))
+</code></pre>
+
+<p>As you can see from the above code, the handle-submit function transitions the application state with <a href="https://github.com/swannodette/om/wiki/Documentation#transact">transact!</a> by performing a <a href="https://clojuredocs.org/clojure.core/conj">conj</a> on the :comments vector with the latest comment. It then erases the text input back to empty. </p>
+
+<p>The code for this is <a href="https://github.com/mjw56/cljs-playground">here</a>. It's running using Chestnut. It's pretty rad, <a href="https://github.com/swannodette">David Nolen</a> wrote a <a href="http://swannodette.github.io/2014/10/10/magic/">blog post</a> about it.</p>
+
+<p>Shout out to <a href="https://github.com/annapawlicka">annapawlicka</a> in #clojurescript for helping to explain clojurescript to a total n00b. :) </p>
+		</div>
+	
+		<ol class="share_digitus">
+            <li>
+                <span>Share:</span>
+                <ul class="share-ikons_digitus">
+                    <li><a class="fa fa-twitter-square" target="_blank" href="http://twitter.com/share?text=Building UI Components with Om, ClojureScript, and React&url=http://localhost:2368/a-simple-comments-app-with-om/"><span class="hidden_digitus">Twitter</span></a></li>
+                    <li><a class="fa fa-facebook-square" target="_blank" href="http://www.facebook.com/sharer.php?u=http://localhost:2368/a-simple-comments-app-with-om/"><span class="hidden_digitus">Facebook</span></a></li>
+                    <li><a class="fa fa-google-plus-square" target="_blank" href="https://plus.google.com/share?url=http://localhost:2368/a-simple-comments-app-with-om/"><span class="hidden_digitus">Google+</span></a></li>
+                </ul>
+            </li>
+            <li class="back_digitus"><a href="index.html"><i class="fa fa-level-up"></i><span>Back to top</span></a></li>
+		</ol>
+	
+    
+     <footer class="postfooter_digitus">
+         
+        
+         <address>
+				<div class="authorimage_digitus" style="background-image: url(http://www.gravatar.com/avatar/24b41978e9a7a9fa51b8cb52bc0966b8?d=404&amp;s=250)"></div>
+         
+                <ul>
+				    <li><h4 class="authorname_digitus"><a href="../author/mike/index.html">Mike Wilcox</a></h4></li>
+                    <li><p class="authorbio_digitus"></p></li>
+				    <li>  
+                    </li>
+				</ul>
+             </address>
+		</footer>
+	
+	</article>
+	
+	
+	<div id="disqus_thread" class="disqusbox_digitus">
+        
+    <script type="text/javascript">
+        
+        var disqus_shortname = 'example'; // required: replace example with your Disqus shortname
+        var disqus_identifier = '';
+        
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    
+</div>
+	
+	
+</main>
+<footer class="footer_digitus">
+	<ul>
+        <li>
+            <span class="tooltip_digitus">Subscribe!</span>
+            <a href="../rss/index.html" target="_blank">
+                <span class="fa fa-stack">
+                    <i class="fa fa-stop fa-stack-2x"></i>
+                    <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+            </a>
+        </li>
+
+        <li>
+            <span class="tooltip_digitus">Twitter</span>
+            <a href="https://twitter.com/subr0utine">
+                <span class="fa fa-stack">
+                    <i class="fa fa-stop fa-stack-2x"></i>
+                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                </span>
+            </a>
+        </li>
+
+        <li>
+            <span class="tooltip_digitus">Github</span>
+            <a href="https://github.com/mjw56">
+                <span class="fa fa-stack">
+                    <i class="fa fa-stop fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+            </a>
+        </li>
+
+	</ul>
+
+		<p>Made with <3<br/>
+		  Theme created by <a href="http://golem.io">golem.io</a> &bull; Proudly published with <a class="icon-ghost" href="http://tryghost.org" target="_blank">Ghost</a></p>
+</footer>
+
+<script src="../public/jquery.js"></script>
+
+<script type="text/javascript">
+
+    var disqus_shortname = 'example'; // required: replace example with your Disqus shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+
+<script type="text/javascript" src="../assets/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="../assets/js/index.js"></script>
+<script type="text/javascript" src="../assets/js/prism.js"></script>
+</body>
+</html>
