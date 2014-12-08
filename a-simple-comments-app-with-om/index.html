@@ -33,7 +33,7 @@
     <meta property="og:description" content="Om is a ClojureScript interface to Facebook's React. From their github:   Om allows users to represent their UIs simply as EDN. Because ClojureScript data is immutable data, Om can always rapidly re-render the UI from the root. Thus Om UIs..." />
     <meta property="og:url" content="http://localhost:2368/a-simple-comments-app-with-om/" />
     <meta property="article:published_time" content="2014-12-07T23:39:14.906Z" />
-    <meta property="article:modified_time" content="2014-12-07T23:41:40.206Z" />
+    <meta property="article:modified_time" content="2014-12-08T00:02:07.788Z" />
     
     <meta name="twitter:card" content="content" />
     <meta name="twitter:title" content="Building UI Components with Om, ClojureScript, and React" />
@@ -55,7 +55,7 @@
     "headline": "Building UI Components with Om, ClojureScript, and React",
     "url": "http://localhost:2368/a-simple-comments-app-with-om/",
     "datePublished": "2014-12-07T23:39:14.906Z",
-    "dateModified": "2014-12-07T23:41:40.206Z",
+    "dateModified": "2014-12-08T00:02:07.788Z",
     "description": "Om is a ClojureScript interface to Facebook's React. From their github:   Om allows users to represent their UIs simply as EDN. Because ClojureScript data is immutable data, Om can always rapidly re-render the UI from the root. Thus Om UIs"
 }
     </script>
@@ -103,7 +103,7 @@
 		</header>
 	
 		<div class="postcontent_digitus">
-			<p>Om is a <a href="https://github.com/clojure/clojurescript">ClojureScript</a> interface to Facebook's <a href="https://github.com/facebook/react">React</a>. From their <a href="https://github.com/swannodette/om">github</a>:</p>
+			<p><a href="https://github.com/swannodette/om">Om</a> is a <a href="https://github.com/clojure/clojurescript">ClojureScript</a> interface to Facebook's <a href="https://github.com/facebook/react">React</a>. From their <a href="https://github.com/swannodette/om">github</a>:</p>
 
 <blockquote>
   <p>Om allows users to represent their UIs simply as <a href="https://github.com/edn-format/edn">EDN</a>. Because ClojureScript data is immutable data, Om can always rapidly re-render the UI from the root. Thus Om UIs are out of the box snapshotable and undoable and these operations have no implementation complexity and little overhead.</p>
@@ -113,7 +113,7 @@
 
 <ul>
 <li>Comments Box</li>
-<li>Comment List</li>
+<li>Comments List</li>
 <li>Comment</li>
 <li>Input</li>
 </ul>
@@ -124,7 +124,7 @@
 
 <pre><code class="language-javascript">(def app-state
   (atom
-    {:comments {:data [{ :author "Commenter 1" :text "comment 1" }
+    {:data {:comments [{ :author "Commenter 1" :text "comment 1" }
                        { :author "Commenter 2" :text "comment 2" }]}}))
 </code></pre>
 
