@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+<title>React Native, Flux, &amp; Music :: Part I</title>
+<link rel="shortcut icon" href="../assets/favicon.png">
+<meta name="description" content="" />
+
+<meta name="twitter:site" content="">
+
+<meta name="twitter:creator" content="">
+
+<meta name="google-site-verification" content="">
+
+<meta property="fb:admins" content="">
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<link rel="stylesheet" type="text/css" href="../assets/css/font-awesome.min.css" />
+<link rel="stylesheet" type="text/css" href="../assets/css/animation.css" />
+<link rel="stylesheet" type="text/css" href="../assets/css/prism.css" />
+
+<meta name="HandheldFriendly" content="True" />
+<meta name="MobileOptimized" content="320" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+<link rel="canonical" href="index.html" />
+    
+    <meta property="og:site_name" content="mike wilcox" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="React Native, Flux, & Music :: Part I" />
+    <meta property="og:description" content="React Native is almost 2 months old since it was released publicly in March. It's amazing what this framework provides to JavaScript development community. Kudos to the facebook engineers and the OSS community! When it was first released I had..." />
+    <meta property="og:url" content="http://localhost:2368/react-native-flux-and-music/" />
+    <meta property="article:published_time" content="2015-05-08T23:49:50.551Z" />
+    <meta property="article:modified_time" content="2015-05-08T23:51:53.384Z" />
+    
+    <meta name="twitter:card" content="content" />
+    <meta name="twitter:title" content="React Native, Flux, & Music :: Part I" />
+    <meta name="twitter:description" content="React Native is almost 2 months old since it was released publicly in March. It's amazing what this framework provides to JavaScript development community. Kudos to the facebook engineers and the OSS community! When it was first released I had..." />
+    <meta name="twitter:url" content="http://localhost:2368/react-native-flux-and-music/" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "publisher": "mike wilcox",
+    "author": {
+        "@type": "Person",
+        "name": "Mike Wilcox",
+        "image": "http://localhost:2368//www.gravatar.com/avatar/24b41978e9a7a9fa51b8cb52bc0966b8?d=404&s=250",
+        "url": "http://localhost:2368/author/mike",
+        "sameAs": null
+    },
+    "headline": "React Native, Flux, & Music :: Part I",
+    "url": "http://localhost:2368/react-native-flux-and-music/",
+    "datePublished": "2015-05-08T23:49:50.551Z",
+    "dateModified": "2015-05-08T23:51:53.384Z",
+    "description": "React Native is almost 2 months old since it was released publicly in March. It's amazing what this framework provides to JavaScript development community. Kudos to the facebook engineers and the OSS community! When it was first released I had"
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.5" />
+    <link rel="alternate" type="application/rss+xml" title="mike wilcox" href="../rss/index.html" />
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-XXXXXXXX-X'); // Paste your Google Analytics ID here.
+    ga('send', 'pageview');
+</script>
+</head>
+
+<body class="post-template">
+
+
+<header role='banner' class="site-head_digitus wrapper_digitus fade_digitus">
+        <a class="logo_digitus" href="../index.html"><img src="../content/images/2014/10/hubble-1.jpg" alt="mike wilcox" /></a>
+    <h1 class="blogtitle_digitus">
+        <a title="mike wilcox" href='../index.html'>
+            mike wilcox
+        </a>
+    </h1>
+</header>
+
+
+<main class="wrapper_digitus" role="main">
+    
+	
+    <article class="article_digitus">
+	
+		<header class="postheader_digitus">
+            <h1 class="posttitle_digitus">React Native, Flux, &amp; Music :: Part I</h1>
+            <span>by</span><h4 class="authorname_digitus"><a href="../author/mike/index.html">Mike Wilcox</a></h4>
+            <hr class="pause" />
+			<ul>
+				<li><i class="fa fa-calendar"></i><time class="date_digitus" >Friday 08 May 2015</time></li>
+                <li><i class="fa fa-comments"></i><a class="comments_digitus" href="index.html#disqus_thread" data-disqus-identifier="7">Comments</a></li>
+			</ul>
+		</header>
+	
+		<div class="postcontent_digitus">
+			<p>React Native is almost 2 months old since it was released publicly in March. It's amazing what this framework provides to JavaScript development community. Kudos to the facebook engineers and the OSS community! When it was first released I had to get my hands on it and build an app. In this first installment post I want to walk through my experience and share with you what I discovered. I built an app that plays audio from the archive.org website. It was a really nice experience and I'm really pleased with the way it turned out for the amount of time that I spent working on it. Overall, React Native is awesome and very promising. I'm really excited for what the future of JavaScript holds! =) In this first segment, I am going to discuss getting started with Navigation. In future segments I will discuss code structure, adding flux to your app, and playing music with plugin modules.</p>
+
+<p>So where should you start when writing a React Native app? I think one of the most important decisions for me was Navigation. How is my app going to feel? How will users get back and forth between views in my app? If you're like me, you may have jumped over to the React Native <a href="https://facebook.github.io/react-native/docs/getting-started.html">docs</a> page to check out what your options are. Quickly, you'll see that there are two options for Navigation: <code>Navigator</code> and <code>NavigatorIOS</code>. So which one should you choose? Well, if you want to adhere strictly to the IOS navigation and get the "truest" sense of iOS navigation, I would suggest using <code>NavigatorIOS</code> which wraps UIKit navigation. However, if you're looking for something custom with a little more flexibility that still looks and feels nice, you can go with <code>Navigator</code>. For this example app I am going to use <code>Navigator</code> as I've grown to be most comfortable with it in the past few weeks.</p>
+
+<p>So how does <code>Navigator</code> actually work? What do I need to do to get started? Well, one main thing to get down is that it refers to "pages" in your app as scenes. So say you have a home scene that may have only a text input and a button. This would be one scene in your app. Then maybe you have a search results list view, that would be another scene. Navigator will keep track of the routes internally and push, pop as required. It does all the hard work for you. So the next thing you may be thinking is, how does it animate, what are my options? Navigator already has some built in animations for when transitioning between scenes. They are: </p>
+
+<pre><code class="language-javascript">PushFromRight  
+FloatFromRight  
+FloatFromBottom  
+HorizontalSwipeJump  
+</code></pre>
+
+<p>So basically how <code>Navigator</code> works is that it will sit in the parent component, if you're starting a boilerplate app the parent component is inside <code>index.ios.js</code>. Inside here you will need to import the <code>Navigator</code> component from the React library. One important thing to note is that <code>Navigator</code> has a few important props for handling how scenes in your app are setup and displayed. The first important one is <code>initialRoute</code> which bascially handles the base route for your app. It may look like this:</p>
+
+<pre><code class="language-javascript">initialRoute={{  
+  component: MusicApp,
+  navigationBar: &lt;NavigationBar title="Music App" /&gt;,
+  title: 'Music App',
+}}
+</code></pre>
+
+<p>here we provide it a React component and here I am using a RN custom component <a href="https://github.com/Kureev/react-native-navbar">react-native-navbar</a> as my navbar. It's not required that you use <code>react-native-navbar</code> and you can roll your own. There are some good examples over in the offical RN <a href="https://github.com/facebook/react-native/tree/master/Examples/UIExplorer/Navigator">Examples repo</a>. For the sake of getting something up quickly and looks nice in the app, I found that react-native-navbar did the job just fine.</p>
+
+<p>The next important prop for <code>Navigator</code> is <code>renderScene</code>. This function will get called everytime you push or pop to the Navigation stack. Essentially, it's job is to setup the scene when your user is going backwards or forwards. So, you would provide a function to your <code>renderScene</code> prop: <code>renderScene={this.renderScene}</code>.</p>
+
+<p>Now, here is an example of how I have done a <code>renderScene</code>,</p>
+
+<pre><code class="language-javascript">renderScene(route, navigator) {  
+  var Component = route.component;
+  var navBar = route.navigationBar;
+
+  if (navBar) {
+    navBar = React.addons.cloneWithProps(navBar, {
+      navigator: navigator,
+      route: route
+    });
+  }
+
+  return (
+    &lt;View style={styles.navContainer}&gt;
+
+      {navBar}
+      &lt;Component navigator={navigator} {...route.props} /&gt;
+      &lt;CurrentTrack /&gt;
+    &lt;/View&gt;
+  );
+
+},
+</code></pre>
+
+<p>There's a lot going on up there so let's take it line by line. As you can see, the renderScene function is always called with the route that you are transitioning to and the navigator component itself. When this function is called, we can grab the next component off the route object and if it has a navbar we can get that too. I'll get to what that looks like when your push a route down below in just a little bit. But let's finish with this <code>renderScene</code> function. So what we do next is check if the next route has a navbar, and if so we use a React internal tool to make a copy of that and pass in the route and navigator as props. (Note: cloneWithProps is deprecated and we probably should be using cloneElement: <a href="https://facebook.github.io/react/docs/clone-with-props.html">https://facebook.github.io/react/docs/clone-with-props.html</a>).</p>
+
+<p>You can push a route from anywhere where you have a navigator instance. As you can see, you can simply pass it the component instance, as well as the title, navbar, props etc. One important thing to note below is the sceneConfig property. Here we are overriding the default navigation animation by providing the <code>Navigator.SceneConfigs.FloatFromBottom</code>. So, instead of <code>FloatFromRight</code>, our app will <code>FloatFromBottom</code> when transitioning in. =)</p>
+
+<pre><code class="language-javascript">this.props.navigator.push({  
+  title: 'Search',
+  component: SearchList,
+  navigationBar: &lt;NavigationBar title="Search"/&gt;,
+  props: {
+    query: this.state.input
+  },
+  sceneConfig: {
+    ...Navigator.SceneConfigs.FloatFromBottom,
+    gestures: {}
+  }
+})
+</code></pre>
+
+<p>That's all I have for the first segment. In the next segment I will jump into the actual code and discuss code structure and adding Flux to a RN app. =)</p>
+		</div>
+	
+		<ol class="share_digitus">
+            <li>
+                <span>Share:</span>
+                <ul class="share-ikons_digitus">
+                    <li><a class="fa fa-twitter-square" target="_blank" href="http://twitter.com/share?text=React Native, Flux, &amp; Music :: Part I&url=http://localhost:2368/react-native-flux-and-music/"><span class="hidden_digitus">Twitter</span></a></li>
+                    <li><a class="fa fa-facebook-square" target="_blank" href="http://www.facebook.com/sharer.php?u=http://localhost:2368/react-native-flux-and-music/"><span class="hidden_digitus">Facebook</span></a></li>
+                    <li><a class="fa fa-google-plus-square" target="_blank" href="https://plus.google.com/share?url=http://localhost:2368/react-native-flux-and-music/"><span class="hidden_digitus">Google+</span></a></li>
+                </ul>
+            </li>
+            <li class="back_digitus"><a href="index.html"><i class="fa fa-level-up"></i><span>Back to top</span></a></li>
+		</ol>
+	
+    
+     <footer class="postfooter_digitus">
+         
+        
+         <address>
+				<div class="authorimage_digitus" style="background-image: url(http://www.gravatar.com/avatar/24b41978e9a7a9fa51b8cb52bc0966b8?d=404&amp;s=250)"></div>
+         
+                <ul>
+				    <li><h4 class="authorname_digitus"><a href="../author/mike/index.html">Mike Wilcox</a></h4></li>
+                    <li><p class="authorbio_digitus"></p></li>
+				    <li>  
+                    </li>
+				</ul>
+             </address>
+		</footer>
+	
+	</article>
+	
+	
+	<div id="disqus_thread" class="disqusbox_digitus">
+        
+    <script type="text/javascript">
+        
+        var disqus_shortname = 'example'; // required: replace example with your Disqus shortname
+        var disqus_identifier = '';
+        
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    
+</div>
+	
+	
+</main>
+<footer class="footer_digitus">
+	<ul>
+        <li>
+            <span class="tooltip_digitus">Subscribe!</span>
+            <a href="../rss/index.html" target="_blank">
+                <span class="fa fa-stack">
+                    <i class="fa fa-stop fa-stack-2x"></i>
+                    <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+            </a>
+        </li>
+
+        <li>
+            <span class="tooltip_digitus">Twitter</span>
+            <a href="https://twitter.com/subr0utine">
+                <span class="fa fa-stack">
+                    <i class="fa fa-stop fa-stack-2x"></i>
+                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                </span>
+            </a>
+        </li>
+
+        <li>
+            <span class="tooltip_digitus">Github</span>
+            <a href="https://github.com/mjw56">
+                <span class="fa fa-stack">
+                    <i class="fa fa-stop fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+            </a>
+        </li>
+
+	</ul>
+
+		<p>Made with <3<br/>
+		  Theme created by <a href="http://golem.io">golem.io</a> &bull; Proudly published with <a class="icon-ghost" href="http://tryghost.org" target="_blank">Ghost</a></p>
+</footer>
+
+<script src="../public/jquery.js"></script>
+
+<script type="text/javascript">
+
+    var disqus_shortname = 'example'; // required: replace example with your Disqus shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+
+<script type="text/javascript" src="../assets/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="../assets/js/index.js"></script>
+<script type="text/javascript" src="../assets/js/prism.js"></script>
+</body>
+</html>

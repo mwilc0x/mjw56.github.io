@@ -1,5 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[mike wilcox]]></title><description><![CDATA[mike wilcox]]></description><link>http://localhost:2368/</link><generator>Ghost 0.5</generator><lastBuildDate>Mon, 08 Dec 2014 00:08:13 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Building UI Components with Om, ClojureScript, and React]]></title><description><![CDATA[<p><a href="https://github.com/swannodette/om">Om</a> is a <a href="https://github.com/clojure/clojurescript">ClojureScript</a> interface to Facebook's <a href="https://github.com/facebook/react">React</a>. From their <a href="https://github.com/swannodette/om">github</a>:</p>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[mike wilcox]]></title><description><![CDATA[mike wilcox]]></description><link>http://localhost:2368/</link><generator>Ghost 0.5</generator><lastBuildDate>Fri, 08 May 2015 23:52:02 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[React Native, Flux, & Music :: Part I]]></title><description><![CDATA[<p>React Native is almost 2 months old since it was released publicly in March. It's amazing what this framework provides to JavaScript development community. Kudos to the facebook engineers and the OSS community! When it was first released I had to get my hands on it and build an app. In this first installment post I want to walk through my experience and share with you what I discovered. I built an app that plays audio from the archive.org website. It was a really nice experience and I'm really pleased with the way it turned out for the amount of time that I spent working on it. Overall, React Native is awesome and very promising. I'm really excited for what the future of JavaScript holds! =) In this first segment, I am going to discuss getting started with Navigation. In future segments I will discuss code structure, adding flux to your app, and playing music with plugin modules.</p>
+
+<p>So where should you start when writing a React Native app? I think one of the most important decisions for me was Navigation. How is my app going to feel? How will users get back and forth between views in my app? If you're like me, you may have jumped over to the React Native <a href="https://facebook.github.io/react-native/docs/getting-started.html">docs</a> page to check out what your options are. Quickly, you'll see that there are two options for Navigation: <code>Navigator</code> and <code>NavigatorIOS</code>. So which one should you choose? Well, if you want to adhere strictly to the IOS navigation and get the "truest" sense of iOS navigation, I would suggest using <code>NavigatorIOS</code> which wraps UIKit navigation. However, if you're looking for something custom with a little more flexibility that still looks and feels nice, you can go with <code>Navigator</code>. For this example app I am going to use <code>Navigator</code> as I've grown to be most comfortable with it in the past few weeks.</p>
+
+<p>So how does <code>Navigator</code> actually work? What do I need to do to get started? Well, one main thing to get down is that it refers to "pages" in your app as scenes. So say you have a home scene that may have only a text input and a button. This would be one scene in your app. Then maybe you have a search results list view, that would be another scene. Navigator will keep track of the routes internally and push, pop as required. It does all the hard work for you. So the next thing you may be thinking is, how does it animate, what are my options? Navigator already has some built in animations for when transitioning between scenes. They are: </p>
+
+<pre><code class="language-javascript">PushFromRight  
+FloatFromRight  
+FloatFromBottom  
+HorizontalSwipeJump  
+</code></pre>
+
+<p>So basically how <code>Navigator</code> works is that it will sit in the parent component, if you're starting a boilerplate app the parent component is inside <code>index.ios.js</code>. Inside here you will need to import the <code>Navigator</code> component from the React library. One important thing to note is that <code>Navigator</code> has a few important props for handling how scenes in your app are setup and displayed. The first important one is <code>initialRoute</code> which bascially handles the base route for your app. It may look like this:</p>
+
+<pre><code class="language-javascript">initialRoute={{  
+  component: MusicApp,
+  navigationBar: &lt;NavigationBar title="Music App" /&gt;,
+  title: 'Music App',
+}}
+</code></pre>
+
+<p>here we provide it a React component and here I am using a RN custom component <a href="https://github.com/Kureev/react-native-navbar">react-native-navbar</a> as my navbar. It's not required that you use <code>react-native-navbar</code> and you can roll your own. There are some good examples over in the offical RN <a href="https://github.com/facebook/react-native/tree/master/Examples/UIExplorer/Navigator">Examples repo</a>. For the sake of getting something up quickly and looks nice in the app, I found that react-native-navbar did the job just fine.</p>
+
+<p>The next important prop for <code>Navigator</code> is <code>renderScene</code>. This function will get called everytime you push or pop to the Navigation stack. Essentially, it's job is to setup the scene when your user is going backwards or forwards. So, you would provide a function to your <code>renderScene</code> prop: <code>renderScene={this.renderScene}</code>.</p>
+
+<p>Now, here is an example of how I have done a <code>renderScene</code>,</p>
+
+<pre><code class="language-javascript">renderScene(route, navigator) {  
+  var Component = route.component;
+  var navBar = route.navigationBar;
+
+  if (navBar) {
+    navBar = React.addons.cloneWithProps(navBar, {
+      navigator: navigator,
+      route: route
+    });
+  }
+
+  return (
+    &lt;View style={styles.navContainer}&gt;
+
+      {navBar}
+      &lt;Component navigator={navigator} {...route.props} /&gt;
+      &lt;CurrentTrack /&gt;
+    &lt;/View&gt;
+  );
+
+},
+</code></pre>
+
+<p>There's a lot going on up there so let's take it line by line. As you can see, the renderScene function is always called with the route that you are transitioning to and the navigator component itself. When this function is called, we can grab the next component off the route object and if it has a navbar we can get that too. I'll get to what that looks like when your push a route down below in just a little bit. But let's finish with this <code>renderScene</code> function. So what we do next is check if the next route has a navbar, and if so we use a React internal tool to make a copy of that and pass in the route and navigator as props. (Note: cloneWithProps is deprecated and we probably should be using cloneElement: <a href="https://facebook.github.io/react/docs/clone-with-props.html">https://facebook.github.io/react/docs/clone-with-props.html</a>).</p>
+
+<p>You can push a route from anywhere where you have a navigator instance. As you can see, you can simply pass it the component instance, as well as the title, navbar, props etc. One important thing to note below is the sceneConfig property. Here we are overriding the default navigation animation by providing the <code>Navigator.SceneConfigs.FloatFromBottom</code>. So, instead of <code>FloatFromRight</code>, our app will <code>FloatFromBottom</code> when transitioning in. =)</p>
+
+<pre><code class="language-javascript">this.props.navigator.push({  
+  title: 'Search',
+  component: SearchList,
+  navigationBar: &lt;NavigationBar title="Search"/&gt;,
+  props: {
+    query: this.state.input
+  },
+  sceneConfig: {
+    ...Navigator.SceneConfigs.FloatFromBottom,
+    gestures: {}
+  }
+})
+</code></pre>
+
+<p>That's all I have for the first segment. In the next segment I will jump into the actual code and discuss code structure and adding Flux to a RN app. =)</p>]]></description><link>http://localhost:2368/react-native-flux-and-music/</link><guid isPermaLink="false">b1247192-ca7d-46e7-b52f-ba546ac1b306</guid><dc:creator><![CDATA[Mike Wilcox]]></dc:creator><pubDate>Fri, 08 May 2015 23:49:50 GMT</pubDate></item><item><title><![CDATA[Building UI Components with Om, ClojureScript, and React]]></title><description><![CDATA[<p><a href="https://github.com/swannodette/om">Om</a> is a <a href="https://github.com/clojure/clojurescript">ClojureScript</a> interface to Facebook's <a href="https://github.com/facebook/react">React</a>. From their <a href="https://github.com/swannodette/om">github</a>:</p>
 
 <blockquote>
   <p>Om allows users to represent their UIs simply as <a href="https://github.com/edn-format/edn">EDN</a>. Because ClojureScript data is immutable data, Om can always rapidly re-render the UI from the root. Thus Om UIs are out of the box snapshotable and undoable and these operations have no implementation complexity and little overhead.</p>
