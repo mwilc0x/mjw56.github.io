@@ -1,5 +1,130 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[mike wilcox]]></title><description><![CDATA[mike wilcox]]></description><link>http://localhost:2368/</link><generator>Ghost 0.5</generator><lastBuildDate>Sat, 09 May 2015 01:48:45 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[React Native, Flux, & Music :: Part I]]></title><description><![CDATA[<p><img src="http://localhost:2368/content/images/2015/05/react_native.png" alt="react-native"></p>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[mike wilcox]]></title><description><![CDATA[mike wilcox]]></description><link>http://localhost:2368/</link><generator>Ghost 0.5</generator><lastBuildDate>Wed, 13 May 2015 23:53:12 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[React Native, Flux, & Music :: Part II]]></title><description><![CDATA[<p><img src="http://localhost:2368/content/images/2015/05/react_native.png" alt="react-native"></p>
+
+<p>In this part II follow-up post I will go into more detail about code structure for creating this music app. This app is using the <a href="https://github.com/goatslacker/alt">alt</a> flux library. Essentially the way it is built, is that I wanted to have a player component available to the user at all times from any screen, ala Spotify. The layout could look something like this:</p>
+
+<pre><code class="language-javascript">&lt;Header /&gt;  
+&lt;SceneComponent /&gt;  
+&lt;PlayerComponent /&gt;  
+</code></pre>
+
+<p>where the <code>&lt;PlayerComponent /&gt;</code> gives user access to play/pause track at anytime. When building with components, I wanted this component to be completely standalone, but to be able to get notifications from any component deep in the application routing. Thus, that is where flux comes into the picture.</p>
+
+<p><img src="http://localhost:2368/content/images/2015/05/app_home.png" alt="home-screen"></p>
+
+<p>So as you can see from the picture above, the landing screen is really straightforward. It's just a search box with a button. Notice the black box at the bottom, that is the <code>&lt;PlayerComponent /&gt;</code> which we will be updating via flux. Ok, so you type some artist into the search box and click Search. You'll be re-directed to the next screen with search results.</p>
+
+<p><img src="http://localhost:2368/content/images/2015/05/app_search_results.png" alt="search-results"></p>
+
+<p>What we did was simple <code>fetch</code> using the parameters that user typed in to archive.org search API. </p>
+
+<pre><code class="language-javascript">  getShows: function(query) {
+
+    var query_string = '';
+
+    query.split(' ').map((term,i) =&gt; {
+      (i === this.length - 1) ? query_string += term : query_string += term + '+';
+    });
+
+    return fetch('http://archive.org/advancedsearch.php?q='+ query_string +'&amp;rows=200&amp;output=json&amp;save=yes#raw')
+  },
+</code></pre>
+
+<p>What's nice about this is that we get to use the <a href="https://facebook.github.io/react-native/docs/network.html#content">fetch polyfill</a> provided by the facebook team. Keep in mind, all of this code is still running on iOS <a href="https://strongloop.com/strongblog/apples-ios7-native-javascript-bridge/">JavaScriptCore</a>. The results list is displayed using a React Native <a href="https://facebook.github.io/react-native/docs/listview.html#content">ListView</a> component:</p>
+
+<pre><code class="language-javascript">  render: function() {
+
+    var elem = this.state.dataSource.$ListViewDataSource_dataBlob.s1.length &gt; 0 ?
+        &lt;ListView
+            initialListSize={25}
+            dataSource={this.state.dataSource}
+            renderRow={this.renderRow}
+          /&gt;:
+      &lt;ActivityIndicatorIOS
+        animating={true}
+        style={[styles.centering, {height: 620}]}
+        size="small"
+      /&gt;
+    return (elem);
+  },
+</code></pre>
+
+<p>Here I am checking if I have gotten any results back yet. If I haven't, I displayed the <a href="https://facebook.github.io/react-native/docs/activityindicatorios.html#content">ActivityIndicatorIOS</a> otherwise I displayed all of the results in a <code>ListView</code>.</p>
+
+<p>Now, the user gets the nice native scroll feel when they are browsing through the shows list. Next, the user can select an album which will open a track list view:</p>
+
+<p><img src="http://localhost:2368/content/images/2015/05/app_song_list-1.png" alt="song-list"></p>
+
+<p>Again, nothing too complicated going on here. We are just listing out some more results in a <code>ListView</code>. I have to do some more fancy work to get the actual tracks from the show id. What I do is pass in the selected show's id to the next view and use that to grab the songs for that show:</p>
+
+<pre><code class="language-javascript">    umphAPI.getShowMetaData('https://archive.org/metadata/' + this.props.identifier)
+    .then(r =&gt; {
+      var data = JSON.parse(r._bodyText).files.filter(d =&gt; {
+        return d.format === 'VBR MP3';
+      });
+
+      if(data.length === 0) return;
+
+      var tracks = sortByAll(data, ['name']),
+          dir = JSON.parse(r._bodyText).dir
+
+      this.setState({
+        dir: dir,
+        loading: false,
+        dataSource: this.state.dataSource.cloneWithRows(tracks),
+        currentTrack: {
+          url: 'https://archive.org' + dir + '/' + tracks[0].name,
+          index: 0
+        },
+        tracks: tracks
+      })
+
+    });
+</code></pre>
+
+<p>Next, the user can select a song that they would like to hear. Here is where <a href="https://facebook.github.io/flux/docs/overview.html#content">flux</a> comes into the picture. So basically I have the player component alive at all times sitting down at the bottom of the app. It's waiting to hear a push from the <code>PlayerStore</code> that a track has been selected from an album.</p>
+
+<pre><code class="language-javascript">  componentDidMount: function() {
+    this.listenTo(PlayerStore, this._onChange)
+
+    var state = PlayerStore.getState()
+
+    if(!state) return;
+
+    this.setState({
+      song: (state.tracks[state.index] || {}).title,
+      playing: state.playing || false
+    })
+
+  },
+</code></pre>
+
+<p>When it hears that a track has been selected it goes and grabs it from the store and displays that data. Also, I have the actual component which is playing the audio sitting in the root most level of the app. It is listening for the exact same message from the <code>PlayerStore</code>. When it hears it, it goes and grabs the latest audio track so that it can load that URL into the player so that the audio starts playing:</p>
+
+<pre><code class="language-javascript">&lt;View&gt;  
+  &lt;Home navigator={this.props.navigator} /&gt;
+
+  { this.state.currentTrack.url !== '' ?
+  &lt;Video source={{uri: this.state.currentTrack.url}}
+         rate={1.0}
+         volume={1.0}
+         muted={false}
+         paused={!this.state.playing}
+         resizeMode="contain"
+         repeat={false}
+         style={styles.backgroundVideo}
+         onLoad={this._onLoad}
+         onEnd={this._onEnd} /&gt; : null }
+&lt;/View&gt;  
+</code></pre>
+
+<p>I know what you're probably thinking, a Video component to play audio? Oddly enough, this component uses <code>AVPlayer</code> which handles audio great. At the time that I had made this, a standalone audio component had not yet been built. This video component is actually really nice, go <a href="https://github.com/brentvatne/react-native-video">check it out</a>.</p>
+
+<p>So, we selected the Nothing Too Fancy track from the show list. An action was dispatched through the dispatcher and into the <code>PlayerStore</code> where a change was emitted to any listeners. The <code>CurrentTrack</code> and <code>Video</code> component both heard these changes, and the track data was updated and the audio started playing!</p>
+
+<p><img src="http://localhost:2368/content/images/2015/05/app_playing.png" alt="audio-playing"></p>
+
+<p>Great success! I hope you found this post entertaining, Cheers!</p>]]></description><link>http://localhost:2368/react-native-flux-music-part-ii/</link><guid isPermaLink="false">d4929005-9be0-40d9-9c3c-fdaaf11c8cc9</guid><dc:creator><![CDATA[Mike Wilcox]]></dc:creator><pubDate>Wed, 13 May 2015 23:52:38 GMT</pubDate></item><item><title><![CDATA[React Native, Flux, & Music :: Part I]]></title><description><![CDATA[<p><img src="http://localhost:2368/content/images/2015/05/react_native.png" alt="react-native"></p>
 
 <p>React Native is almost 2 months old since it was released publicly in March. It's amazing what this framework provides to JavaScript development community. Kudos to the facebook engineers and the OSS community! When it was first released I had to get my hands on it and build an app. In this first installment post I want to walk through my experience and share with you what I discovered. I built an app that plays audio from the archive.org website. It was a really nice experience and I'm really pleased with the way it turned out for the amount of time that I spent working on it. Overall, React Native is awesome and very promising. I'm really excited for what the future of JavaScript holds! =) In this first segment, I am going to discuss getting started with Navigation. In future segments I will discuss code structure, adding flux to your app, and playing music with plugin modules.</p>
 
