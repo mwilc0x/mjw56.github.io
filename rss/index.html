@@ -1,5 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[mike wilcox]]></title><description><![CDATA[mike wilcox]]></description><link>http://localhost:2368/</link><generator>Ghost 0.5</generator><lastBuildDate>Fri, 15 May 2015 00:48:55 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Design, Composition and Performance]]></title><description><![CDATA[<p>I really enjoyed this talk by Rich Hickey.</p>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[mike wilcox]]></title><description><![CDATA[mike wilcox]]></description><link>http://localhost:2368/</link><generator>Ghost 0.5</generator><lastBuildDate>Fri, 15 May 2015 20:34:07 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Using the Fetch API with Angular 2 Using Zones]]></title><description><![CDATA[<p>So, you want to use <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">fetch</a> in your next Angular 2 app? But you're not quite yet familiar with <a href="https://github.com/angular/zone.js">zones</a> in Angular? You may run into a bit of head scratcher when you see your UI is not updating after your data is fetched.</p>
+
+<p>Recently I was trying to use fetch to get some data and bind that data back to my controller. It looked something like this:</p>
+
+<pre><code class="language-javascript">declare var fetch;
+
+export class API {
+
+    getBooks() {
+        return fetch('http://localhost:3001/books')
+    }
+
+}
+</code></pre>
+
+<pre><code class="language-javascript">import {bootstrap, Component, View, For} from 'angular2/angular2';  
+import {bind} from 'angular2/di';  
+import {BookList} from './components/book-list/book-list';  
+import {API} from './utils/api';
+
+@Component({
+    selector:'app',
+    injectables: [API]
+})
+@View({
+    directives: [
+        BookList,
+        For
+    ],
+    template: 
+        '&lt;div&gt;' +
+            '&lt;h1&gt;{{name}}&lt;/h1&gt;' +
+            '{{lists.length}}' +
+        '&lt;/div&gt;'
+})
+class App {
+
+    name: string;
+    lists: any;
+    list: any;
+
+    constructor(api: API) {
+
+        api.getBooks()
+          .then(r =&gt; r.json())
+          .then(r =&gt; {
+            this.lists = r;
+          });       
+    }   
+}
+
+bootstrap(App);
+</code></pre>
+
+<p>...but, this did not work. I was a bit baffled. I found out we need to use Zones in Angular 2. <a href="https://github.com/angular/zone.js">What is a zone you might ask?</a>:</p>
+
+<pre><code>A Zone is an execution context that persists across async tasks. You can think of it as thread-local storage for JavaScript VMs.  
+</code></pre>
+
+<p>So, we'll need to wrap the fetch in <code>Zone.bindPromiseFn</code> so that Angular is aware of the fetch promise and the data is bound to the UI.</p>
+
+<p>Here is how this is implemented:</p>
+
+<pre><code class="language-javascript">declare var fetch, Zone;
+
+export class API {
+
+    getBooks() {        
+      return Zone.bindPromiseFn(fetch)('http://localhost:3001/books');
+    }
+
+}
+</code></pre>
+
+<p>...and now you can fetch data all you want in Angular 2! :)</p>
+
+<p>Cheers</p>]]></description><link>http://localhost:2368/using-fetch-api-with-angular-2/</link><guid isPermaLink="false">dadbeb42-681b-48f0-a397-cebdee28b665</guid><dc:creator><![CDATA[Mike Wilcox]]></dc:creator><pubDate>Fri, 15 May 2015 20:31:55 GMT</pubDate></item><item><title><![CDATA[Design, Composition and Performance]]></title><description><![CDATA[<p>I really enjoyed this talk by Rich Hickey.</p>
 
 <p><a href="http://www.infoq.com/presentations/Design-Composition-Performance">http://www.infoq.com/presentations/Design-Composition-Performance</a></p>]]></description><link>http://localhost:2368/design-composition-and-performance/</link><guid isPermaLink="false">52e163ec-43be-4dc5-beb6-220403e61dd1</guid><dc:creator><![CDATA[Mike Wilcox]]></dc:creator><pubDate>Fri, 15 May 2015 00:48:51 GMT</pubDate></item><item><title><![CDATA[React Native, Flux, & Music :: Part II]]></title><description><![CDATA[<p><img src="http://localhost:2368/content/images/2015/05/react_native.png" alt="react-native"></p>
 

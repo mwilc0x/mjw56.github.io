@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+<title>Using the Fetch API with Angular 2 Using Zones</title>
+<link rel="shortcut icon" href="../assets/favicon.png">
+<meta name="description" content="" />
+
+<meta name="twitter:site" content="">
+
+<meta name="twitter:creator" content="">
+
+<meta name="google-site-verification" content="">
+
+<meta property="fb:admins" content="">
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<link rel="stylesheet" type="text/css" href="../assets/css/font-awesome.min.css" />
+<link rel="stylesheet" type="text/css" href="../assets/css/animation.css" />
+<link rel="stylesheet" type="text/css" href="../assets/css/prism.css" />
+
+<meta name="HandheldFriendly" content="True" />
+<meta name="MobileOptimized" content="320" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+<link rel="canonical" href="index.html" />
+    
+    <meta property="og:site_name" content="mike wilcox" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Using the Fetch API with Angular 2 Using Zones" />
+    <meta property="og:description" content="So, you want to use fetch in your next Angular 2 app? But you're not quite yet familiar with zones in Angular? You may run into a bit of head scratcher when you see your UI is not updating after..." />
+    <meta property="og:url" content="http://localhost:2368/using-fetch-api-with-angular-2/" />
+    <meta property="article:published_time" content="2015-05-15T20:31:55.145Z" />
+    <meta property="article:modified_time" content="2015-05-15T20:33:46.622Z" />
+    
+    <meta name="twitter:card" content="content" />
+    <meta name="twitter:title" content="Using the Fetch API with Angular 2 Using Zones" />
+    <meta name="twitter:description" content="So, you want to use fetch in your next Angular 2 app? But you're not quite yet familiar with zones in Angular? You may run into a bit of head scratcher when you see your UI is not updating after..." />
+    <meta name="twitter:url" content="http://localhost:2368/using-fetch-api-with-angular-2/" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "publisher": "mike wilcox",
+    "author": {
+        "@type": "Person",
+        "name": "Mike Wilcox",
+        "image": "http://localhost:2368//www.gravatar.com/avatar/24b41978e9a7a9fa51b8cb52bc0966b8?d=404&s=250",
+        "url": "http://localhost:2368/author/mike",
+        "sameAs": null
+    },
+    "headline": "Using the Fetch API with Angular 2 Using Zones",
+    "url": "http://localhost:2368/using-fetch-api-with-angular-2/",
+    "datePublished": "2015-05-15T20:31:55.145Z",
+    "dateModified": "2015-05-15T20:33:46.622Z",
+    "description": "So, you want to use fetch in your next Angular 2 app? But you're not quite yet familiar with zones in Angular? You may run into a bit of head scratcher when you see your UI is not updating after"
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.5" />
+    <link rel="alternate" type="application/rss+xml" title="mike wilcox" href="../rss/index.html" />
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-XXXXXXXX-X'); // Paste your Google Analytics ID here.
+    ga('send', 'pageview');
+</script>
+</head>
+
+<body class="post-template">
+
+
+<header role='banner' class="site-head_digitus wrapper_digitus fade_digitus">
+        <a class="logo_digitus" href="../index.html"><img src="../content/images/2014/10/hubble-1.jpg" alt="mike wilcox" /></a>
+    <h1 class="blogtitle_digitus">
+        <a title="mike wilcox" href='../index.html'>
+            mike wilcox
+        </a>
+    </h1>
+</header>
+
+
+<main class="wrapper_digitus" role="main">
+    
+	
+    <article class="article_digitus">
+	
+		<header class="postheader_digitus">
+            <h1 class="posttitle_digitus">Using the Fetch API with Angular 2 Using Zones</h1>
+            <span>by</span><h4 class="authorname_digitus"><a href="http://localhost:2368/author/mike">Mike Wilcox</a></h4>
+            <hr class="pause" />
+			<ul>
+				<li><i class="fa fa-calendar"></i><time class="date_digitus" >Friday 15 May 2015</time></li>
+                <li><i class="fa fa-comments"></i><a class="comments_digitus" href="index.html#disqus_thread" data-disqus-identifier="10">Comments</a></li>
+			</ul>
+		</header>
+	
+		<div class="postcontent_digitus">
+			<p>So, you want to use <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">fetch</a> in your next Angular 2 app? But you're not quite yet familiar with <a href="https://github.com/angular/zone.js">zones</a> in Angular? You may run into a bit of head scratcher when you see your UI is not updating after your data is fetched.</p>
+
+<p>Recently I was trying to use fetch to get some data and bind that data back to my controller. It looked something like this:</p>
+
+<pre><code class="language-javascript">declare var fetch;
+
+export class API {
+
+    getBooks() {
+        return fetch('http://localhost:3001/books')
+    }
+
+}
+</code></pre>
+
+<pre><code class="language-javascript">import {bootstrap, Component, View, For} from 'angular2/angular2';  
+import {bind} from 'angular2/di';  
+import {BookList} from './components/book-list/book-list';  
+import {API} from './utils/api';
+
+@Component({
+    selector:'app',
+    injectables: [API]
+})
+@View({
+    directives: [
+        BookList,
+        For
+    ],
+    template: 
+        '&lt;div&gt;' +
+            '&lt;h1&gt;{{name}}&lt;/h1&gt;' +
+            '{{lists.length}}' +
+        '&lt;/div&gt;'
+})
+class App {
+
+    name: string;
+    lists: any;
+    list: any;
+
+    constructor(api: API) {
+
+        api.getBooks()
+          .then(r =&gt; r.json())
+          .then(r =&gt; {
+            this.lists = r;
+          });       
+    }   
+}
+
+bootstrap(App);
+</code></pre>
+
+<p>...but, this did not work. I was a bit baffled. I found out we need to use Zones in Angular 2. <a href="https://github.com/angular/zone.js">What is a zone you might ask?</a>:</p>
+
+<pre><code>A Zone is an execution context that persists across async tasks. You can think of it as thread-local storage for JavaScript VMs.  
+</code></pre>
+
+<p>So, we'll need to wrap the fetch in <code>Zone.bindPromiseFn</code> so that Angular is aware of the fetch promise and the data is bound to the UI.</p>
+
+<p>Here is how this is implemented:</p>
+
+<pre><code class="language-javascript">declare var fetch, Zone;
+
+export class API {
+
+    getBooks() {        
+      return Zone.bindPromiseFn(fetch)('http://localhost:3001/books');
+    }
+
+}
+</code></pre>
+
+<p>...and now you can fetch data all you want in Angular 2! :)</p>
+
+<p>Cheers</p>
+		</div>
+	
+		<ol class="share_digitus">
+            <li>
+                <span>Share:</span>
+                <ul class="share-ikons_digitus">
+                    <li><a class="fa fa-twitter-square" target="_blank" href="http://twitter.com/share?text=Using the Fetch API with Angular 2 Using Zones&url=http://localhost:2368/using-fetch-api-with-angular-2/"><span class="hidden_digitus">Twitter</span></a></li>
+                    <li><a class="fa fa-facebook-square" target="_blank" href="http://www.facebook.com/sharer.php?u=http://localhost:2368/using-fetch-api-with-angular-2/"><span class="hidden_digitus">Facebook</span></a></li>
+                    <li><a class="fa fa-google-plus-square" target="_blank" href="https://plus.google.com/share?url=http://localhost:2368/using-fetch-api-with-angular-2/"><span class="hidden_digitus">Google+</span></a></li>
+                </ul>
+            </li>
+            <li class="back_digitus"><a href="index.html"><i class="fa fa-level-up"></i><span>Back to top</span></a></li>
+		</ol>
+	
+    
+     <footer class="postfooter_digitus">
+         
+        
+         <address>
+				<div class="authorimage_digitus" style="background-image: url(http://www.gravatar.com/avatar/24b41978e9a7a9fa51b8cb52bc0966b8?d=404&amp;s=250)"></div>
+         
+                <ul>
+				    <li><h4 class="authorname_digitus"><a href="http://localhost:2368/author/mike">Mike Wilcox</a></h4></li>
+                    <li><p class="authorbio_digitus"></p></li>
+				    <li>  
+                    </li>
+				</ul>
+             </address>
+		</footer>
+	
+	</article>
+	
+	
+	<div id="disqus_thread" class="disqusbox_digitus">
+        
+    <script type="text/javascript">
+        
+        var disqus_shortname = 'example'; // required: replace example with your Disqus shortname
+        var disqus_identifier = '';
+        
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    
+</div>
+	
+	
+</main>
+<footer class="footer_digitus">
+	<ul>
+        <li>
+            <span class="tooltip_digitus">Subscribe!</span>
+            <a href="../rss/index.html" target="_blank">
+                <span class="fa fa-stack">
+                    <i class="fa fa-stop fa-stack-2x"></i>
+                    <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+            </a>
+        </li>
+
+        <li>
+            <span class="tooltip_digitus">Twitter</span>
+            <a href="https://twitter.com/subr0utine">
+                <span class="fa fa-stack">
+                    <i class="fa fa-stop fa-stack-2x"></i>
+                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                </span>
+            </a>
+        </li>
+
+        <li>
+            <span class="tooltip_digitus">Github</span>
+            <a href="https://github.com/mjw56">
+                <span class="fa fa-stack">
+                    <i class="fa fa-stop fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+            </a>
+        </li>
+
+	</ul>
+
+		<p>Made with <3<br/>
+		  Theme created by <a href="http://golem.io">golem.io</a> &bull; Proudly published with <a class="icon-ghost" href="http://tryghost.org" target="_blank">Ghost</a></p>
+</footer>
+
+<script src="../public/jquery.js"></script>
+
+<script type="text/javascript">
+
+    var disqus_shortname = 'example'; // required: replace example with your Disqus shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+
+<script type="text/javascript" src="../assets/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="../assets/js/index.js"></script>
+<script type="text/javascript" src="../assets/js/prism.js"></script>
+</body>
+</html>
