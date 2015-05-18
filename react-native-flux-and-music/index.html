@@ -26,7 +26,7 @@
 <meta name="MobileOptimized" content="320" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 <link rel="canonical" href="index.html" />
-    
+
     <meta property="og:site_name" content="mike wilcox" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content="React Native, Flux, & Music :: Part I" />
@@ -34,12 +34,12 @@
     <meta property="og:url" content="http://localhost:2368/react-native-flux-and-music/" />
     <meta property="article:published_time" content="2015-05-08T23:49:50.551Z" />
     <meta property="article:modified_time" content="2015-05-09T01:48:36.339Z" />
-    
+
     <meta name="twitter:card" content="content" />
     <meta name="twitter:title" content="React Native, Flux, & Music :: Part I" />
     <meta name="twitter:description" content=" React Native is almost 2 months old since it was released publicly in March. It's amazing what this framework provides to JavaScript development community. Kudos to the facebook engineers and the OSS community! When it was first released I had..." />
     <meta name="twitter:url" content="http://localhost:2368/react-native-flux-and-music/" />
-    
+
     <script type="application/ld+json">
 {
     "@context": "http://schema.org",
@@ -88,10 +88,10 @@
 
 
 <main class="wrapper_digitus" role="main">
-    
-	
+
+
     <article class="article_digitus">
-	
+
 		<header class="postheader_digitus">
             <h1 class="posttitle_digitus">React Native, Flux, &amp; Music :: Part I</h1>
             <span>by</span><h4 class="authorname_digitus"><a href="http://localhost:2368/author/mike">Mike Wilcox</a></h4>
@@ -101,7 +101,7 @@
                 <li><i class="fa fa-comments"></i><a class="comments_digitus" href="index.html#disqus_thread" data-disqus-identifier="7">Comments</a></li>
 			</ul>
 		</header>
-	
+
 		<div class="postcontent_digitus">
 			<p><img src="../content/images/2015/05/react_native.png" alt="react-native" /></p>
 
@@ -113,15 +113,15 @@
 
 <p>So how does <code>Navigator</code> actually work? What do I need to do to get started? Well, one main thing to get down is that it refers to "pages" in your app as scenes. So say you have a home scene that may have only a text input and a button. This would be one scene in your app. Then maybe you have a search results list view, that would be another scene. Navigator will keep track of the routes internally and push, pop as required. It does all the hard work for you. So the next thing you may be thinking is, how does it animate, what are my options? Navigator already has some built in animations for when transitioning between scenes. They are: </p>
 
-<pre><code class="language-javascript">PushFromRight  
-FloatFromRight  
-FloatFromBottom  
-HorizontalSwipeJump  
+<pre><code class="language-javascript">PushFromRight
+FloatFromRight
+FloatFromBottom
+HorizontalSwipeJump
 </code></pre>
 
 <p>So basically how <code>Navigator</code> works is that it will sit in the parent component, if you're starting a boilerplate app the parent component is inside <code>index.ios.js</code>. Inside here you will need to import the <code>Navigator</code> component from the React library. One important thing to note is that <code>Navigator</code> has a few important props for handling how scenes in your app are setup and displayed. The first important one is <code>initialRoute</code> which bascially handles the base route for your app. It may look like this:</p>
 
-<pre><code class="language-javascript">initialRoute={{  
+<pre><code class="language-javascript">initialRoute={{
   component: MusicApp,
   navigationBar: &lt;NavigationBar title="Music App" /&gt;,
   title: 'Music App',
@@ -134,7 +134,7 @@ HorizontalSwipeJump
 
 <p>Now, here is an example of how I have done a <code>renderScene</code>,</p>
 
-<pre><code class="language-javascript">renderScene(route, navigator) {  
+<pre><code class="language-javascript">renderScene(route, navigator) {
   var Component = route.component;
   var navBar = route.navigationBar;
 
@@ -161,7 +161,7 @@ HorizontalSwipeJump
 
 <p>You can push a route from anywhere where you have a navigator instance. As you can see, you can simply pass it the component instance, as well as the title, navbar, props etc. One important thing to note below is the sceneConfig property. Here we are overriding the default navigation animation by providing the <code>Navigator.SceneConfigs.FloatFromBottom</code>. So, instead of <code>FloatFromRight</code>, our app will <code>FloatFromBottom</code> when transitioning in. =)</p>
 
-<pre><code class="language-javascript">this.props.navigator.push({  
+<pre><code class="language-javascript">this.props.navigator.push({
   title: 'Search',
   component: SearchList,
   navigationBar: &lt;NavigationBar title="Search"/&gt;,
@@ -177,7 +177,7 @@ HorizontalSwipeJump
 
 <p>That's all I have for the first segment. In the next segment I will jump into the actual code and discuss code structure and adding Flux to a RN app. =)</p>
 		</div>
-	
+
 		<ol class="share_digitus">
             <li>
                 <span>Share:</span>
@@ -189,33 +189,33 @@ HorizontalSwipeJump
             </li>
             <li class="back_digitus"><a href="index.html"><i class="fa fa-level-up"></i><span>Back to top</span></a></li>
 		</ol>
-	
-    
+
+
      <footer class="postfooter_digitus">
-         
-        
+
+
          <address>
 				<div class="authorimage_digitus" style="background-image: url(http://www.gravatar.com/avatar/24b41978e9a7a9fa51b8cb52bc0966b8?d=404&amp;s=250)"></div>
-         
+
                 <ul>
 				    <li><h4 class="authorname_digitus"><a href="http://localhost:2368/author/mike">Mike Wilcox</a></h4></li>
                     <li><p class="authorbio_digitus"></p></li>
-				    <li>  
+				    <li>
                     </li>
 				</ul>
              </address>
 		</footer>
-	
+
 	</article>
-	
-	
+
+
 	<div id="disqus_thread" class="disqusbox_digitus">
-        
+
     <script type="text/javascript">
-        
+
         var disqus_shortname = 'example'; // required: replace example with your Disqus shortname
         var disqus_identifier = '';
-        
+
         /* * * DON'T EDIT BELOW THIS LINE * * */
         (function() {
             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -225,10 +225,10 @@ HorizontalSwipeJump
     </script>
     <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
     <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-    
+
 </div>
-	
-	
+
+
 </main>
 <footer class="footer_digitus">
 	<ul>
@@ -244,7 +244,7 @@ HorizontalSwipeJump
 
         <li>
             <span class="tooltip_digitus">Twitter</span>
-            <a href="https://twitter.com/subr0utine">
+            <a href="https://twitter.com/mjw56_">
                 <span class="fa fa-stack">
                     <i class="fa fa-stop fa-stack-2x"></i>
                     <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>

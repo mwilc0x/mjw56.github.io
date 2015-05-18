@@ -14,9 +14,9 @@ export class API {
 }
 </code></pre>
 
-<pre><code class="language-javascript">import {bootstrap, Component, View, For} from 'angular2/angular2';  
-import {bind} from 'angular2/di';  
-import {BookList} from './components/book-list/book-list';  
+<pre><code class="language-javascript">import {bootstrap, Component, View, For} from 'angular2/angular2';
+import {bind} from 'angular2/di';
+import {BookList} from './components/book-list/book-list';
 import {API} from './utils/api';
 
 @Component({
@@ -28,7 +28,7 @@ import {API} from './utils/api';
         BookList,
         For
     ],
-    template: 
+    template:
         '&lt;div&gt;' +
             '&lt;h1&gt;{{name}}&lt;/h1&gt;' +
             '{{lists.length}}' +
@@ -46,8 +46,8 @@ class App {
           .then(r =&gt; r.json())
           .then(r =&gt; {
             this.lists = r;
-          });       
-    }   
+          });
+    }
 }
 
 bootstrap(App);
@@ -55,7 +55,7 @@ bootstrap(App);
 
 <p>...but, this did not work. I was a bit baffled. I found out we need to use Zones in Angular 2. <a href="https://github.com/angular/zone.js">What is a zone you might ask?</a>:</p>
 
-<pre><code>A Zone is an execution context that persists across async tasks. You can think of it as thread-local storage for JavaScript VMs.  
+<pre><code>A Zone is an execution context that persists across async tasks. You can think of it as thread-local storage for JavaScript VMs.
 </code></pre>
 
 <p>So, we'll need to wrap the fetch in <code>Zone.bindPromiseFn</code> so that Angular is aware of the fetch promise and the data is bound to the UI.</p>
@@ -66,7 +66,7 @@ bootstrap(App);
 
 export class API {
 
-    getBooks() {        
+    getBooks() {
       return Zone.bindPromiseFn(fetch)('http://localhost:3001/books');
     }
 
@@ -81,9 +81,9 @@ export class API {
 
 <p>In this part II follow-up post I will go into more detail about code structure for creating this music app. This app is using the <a href="https://github.com/goatslacker/alt">alt</a> flux library. Essentially the way it is built, is that I wanted to have a player component available to the user at all times from any screen, ala Spotify. The layout could look something like this:</p>
 
-<pre><code class="language-javascript">&lt;Header /&gt;  
-&lt;SceneComponent /&gt;  
-&lt;PlayerComponent /&gt;  
+<pre><code class="language-javascript">&lt;Header /&gt;
+&lt;SceneComponent /&gt;
+&lt;PlayerComponent /&gt;
 </code></pre>
 
 <p>where the <code>&lt;PlayerComponent /&gt;</code> gives user access to play/pause track at anytime. When building with components, I wanted this component to be completely standalone, but to be able to get notifications from any component deep in the application routing. Thus, that is where flux comes into the picture.</p>
@@ -179,7 +179,7 @@ export class API {
 
 <p>When it hears that a track has been selected it goes and grabs it from the store and displays that data. Also, I have the actual component which is playing the audio sitting in the root most level of the app. It is listening for the exact same message from the <code>PlayerStore</code>. When it hears it, it goes and grabs the latest audio track so that it can load that URL into the player so that the audio starts playing:</p>
 
-<pre><code class="language-javascript">&lt;View&gt;  
+<pre><code class="language-javascript">&lt;View&gt;
   &lt;Home navigator={this.props.navigator} /&gt;
 
   { this.state.currentTrack.url !== '' ?
@@ -193,7 +193,7 @@ export class API {
          style={styles.backgroundVideo}
          onLoad={this._onLoad}
          onEnd={this._onEnd} /&gt; : null }
-&lt;/View&gt;  
+&lt;/View&gt;
 </code></pre>
 
 <p>I know what you're probably thinking, a Video component to play audio? Oddly enough, this component uses <code>AVPlayer</code> which handles audio great. At the time that I had made this, a standalone audio component had not yet been built. This video component is actually really nice, go <a href="https://github.com/brentvatne/react-native-video">check it out</a>.</p>
@@ -212,15 +212,15 @@ export class API {
 
 <p>So how does <code>Navigator</code> actually work? What do I need to do to get started? Well, one main thing to get down is that it refers to "pages" in your app as scenes. So say you have a home scene that may have only a text input and a button. This would be one scene in your app. Then maybe you have a search results list view, that would be another scene. Navigator will keep track of the routes internally and push, pop as required. It does all the hard work for you. So the next thing you may be thinking is, how does it animate, what are my options? Navigator already has some built in animations for when transitioning between scenes. They are: </p>
 
-<pre><code class="language-javascript">PushFromRight  
-FloatFromRight  
-FloatFromBottom  
-HorizontalSwipeJump  
+<pre><code class="language-javascript">PushFromRight
+FloatFromRight
+FloatFromBottom
+HorizontalSwipeJump
 </code></pre>
 
 <p>So basically how <code>Navigator</code> works is that it will sit in the parent component, if you're starting a boilerplate app the parent component is inside <code>index.ios.js</code>. Inside here you will need to import the <code>Navigator</code> component from the React library. One important thing to note is that <code>Navigator</code> has a few important props for handling how scenes in your app are setup and displayed. The first important one is <code>initialRoute</code> which bascially handles the base route for your app. It may look like this:</p>
 
-<pre><code class="language-javascript">initialRoute={{  
+<pre><code class="language-javascript">initialRoute={{
   component: MusicApp,
   navigationBar: &lt;NavigationBar title="Music App" /&gt;,
   title: 'Music App',
@@ -233,7 +233,7 @@ HorizontalSwipeJump
 
 <p>Now, here is an example of how I have done a <code>renderScene</code>,</p>
 
-<pre><code class="language-javascript">renderScene(route, navigator) {  
+<pre><code class="language-javascript">renderScene(route, navigator) {
   var Component = route.component;
   var navBar = route.navigationBar;
 
@@ -260,7 +260,7 @@ HorizontalSwipeJump
 
 <p>You can push a route from anywhere where you have a navigator instance. As you can see, you can simply pass it the component instance, as well as the title, navbar, props etc. One important thing to note below is the sceneConfig property. Here we are overriding the default navigation animation by providing the <code>Navigator.SceneConfigs.FloatFromBottom</code>. So, instead of <code>FloatFromRight</code>, our app will <code>FloatFromBottom</code> when transitioning in. =)</p>
 
-<pre><code class="language-javascript">this.props.navigator.push({  
+<pre><code class="language-javascript">this.props.navigator.push({
   title: 'Search',
   component: SearchList,
   navigationBar: &lt;NavigationBar title="Search"/&gt;,
@@ -404,7 +404,7 @@ HorizontalSwipeJump
 
 <p>So, lets jump into some code shall we? First, I created a services module which strictly handles communicating to the server. It requires socket.io to talk to the server via events and Q for doing the async communcation via promises. Here is a simplified version of what this might look like:</p>
 
-<pre><code class="language-javascript">var socket = require('socket.io-client')('localhost'),  
+<pre><code class="language-javascript">var socket = require('socket.io-client')('localhost'),
     Q = require('q');
 
 var TodoService = {
@@ -436,15 +436,15 @@ var TodoService = {
 
 };
 
-module.exports = TodoService;  
+module.exports = TodoService;
 </code></pre>
 
 <p>Secondly, in my action creators I have them communicate with this service to do any interactions they may need to do with the server. Once the interaction is complete with the server, the promise resolves and the action creator can dispatch the action with the relevant updated data. This might look someting like this:</p>
 
-<pre><code class="language-javascript">var constants = require('../constants/constants'),  
+<pre><code class="language-javascript">var constants = require('../constants/constants'),
     service = require('../services/todo-service');
 
-var actions = {  
+var actions = {
   addTodo: function(text) {
     var _this = this;
     service.addTodo({text: text}).then(function(todo) {
@@ -466,13 +466,13 @@ module.exports = actions;
 
 <p>And that is pretty much it. I have seen examples where different actions can be dispatched as a result of different responses from the server. I think this is a really nice approach and as this is an overly simplified implementation I did not include this. This can be useful for when you want to send data down to display a loading screen or some type of success/error messages etc.</p>
 
-<p>I hope you found this post useful. I tried to keep it as simple as possible for the purpose of this post. The full code can be found on my <a href="https://github.com/mjw56/react-components">Github</a>. If you have any questions or comments please feel free to reach out to me on <a href="https://twitter.com/subr0utine">Twitter</a> or in the comments section below. Cheers!</p>]]></description><link>http://localhost:2368/handling-asynchronous-data-flow-in-flux/</link><guid isPermaLink="false">8932a38e-5ae2-4cbe-8d6a-b5f32058a823</guid><category><![CDATA[react]]></category><category><![CDATA[flux]]></category><category><![CDATA[server-side]]></category><dc:creator><![CDATA[Mike Wilcox]]></dc:creator><pubDate>Sun, 30 Nov 2014 16:53:34 GMT</pubDate></item><item><title><![CDATA[Publishing a TypeScript package to npm]]></title><description><![CDATA[<p><img src="http://localhost:2368/content/images/2014/11/npm_typescript.png" alt="alt"></p>
+<p>I hope you found this post useful. I tried to keep it as simple as possible for the purpose of this post. The full code can be found on my <a href="https://github.com/mjw56/react-components">Github</a>. If you have any questions or comments please feel free to reach out to me on <a href="https://twitter.com/mjw56_">Twitter</a> or in the comments section below. Cheers!</p>]]></description><link>http://localhost:2368/handling-asynchronous-data-flow-in-flux/</link><guid isPermaLink="false">8932a38e-5ae2-4cbe-8d6a-b5f32058a823</guid><category><![CDATA[react]]></category><category><![CDATA[flux]]></category><category><![CDATA[server-side]]></category><dc:creator><![CDATA[Mike Wilcox]]></dc:creator><pubDate>Sun, 30 Nov 2014 16:53:34 GMT</pubDate></item><item><title><![CDATA[Publishing a TypeScript package to npm]]></title><description><![CDATA[<p><img src="http://localhost:2368/content/images/2014/11/npm_typescript.png" alt="alt"></p>
 
 <p>Recently I tried my hand at publishing a package to npm that was written in TypeScript. TypeScript is a nice way to write JavaScript because it has a type system which gives you instant feedback as you write your code and at compile time.  It's always nice to have that instant feedback as there are usually less surprises when you go to run your code in the browser. Another nice benefit is that you can start writing ES6-like code today! :D</p>
 
 <p>My module is fairly simply as it is only one class with an external interface I use to define my query object. The module can be found <a href="https://github.com/mjw56/surfsup">here</a>. I am using <a href="http://gulpjs.com/">gulp</a> to automate my build process. I used <a href="https://www.npmjs.org/package/gulp-tsc">gulp-tsc</a> to compile the TypeScript in my gulp compile task. It is very straightforward and did the job well for this simple scenario. The only gotcha I ran into was how was my TypeScript going to compile itself before being sent off to the npm registry? The answer is in the <a href="https://www.npmjs.org/doc/misc/npm-scripts.html">scripts</a> property of the package.json. Inside of there we can do all sorts of awesome magic that will make sure our code is in the right state when a user wants to use our module in their code. Specifically for this use-case I used the prepublish property to run my gulp task to compile my TypeScript:</p>
 
-<pre><code class="prettyprint javascript ">'scripts': {  
+<pre><code class="prettyprint javascript ">'scripts': {
     'prepublish': 'gulp compile'
 }
 </code></pre>
