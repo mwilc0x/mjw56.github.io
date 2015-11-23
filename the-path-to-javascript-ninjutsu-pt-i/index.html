@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+<title>The Path to JavaScript Ninjutsu Pt I</title>
+<link rel="shortcut icon" href="../assets/favicon.png">
+<meta name="description" content="" />
+
+<meta name="twitter:site" content="">
+
+<meta name="twitter:creator" content="">
+
+<meta name="google-site-verification" content="">
+
+<meta property="fb:admins" content="">
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" type="text/css" href="../assets/css/style.css" />
+<link rel="stylesheet" type="text/css" href="../assets/css/font-awesome.min.css" />
+<link rel="stylesheet" type="text/css" href="../assets/css/animation.css" />
+<link rel="stylesheet" type="text/css" href="../assets/css/prism.css" />
+
+<meta name="HandheldFriendly" content="True" />
+<meta name="MobileOptimized" content="320" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+<link rel="canonical" href="index.html" />
+    
+    <meta property="og:site_name" content="mike wilcox" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="The Path to JavaScript Ninjutsu Pt I" />
+    <meta property="og:description" content="Here are a five things I think any beginner or intermediate JS developer can do today to become a better JS developer: Understand that functions are first-class objects in JavaScript. Know the difference between function declarations and function expressions, and..." />
+    <meta property="og:url" content="http://localhost:2368/the-path-to-javascript-ninjutsu-pt-i/" />
+    <meta property="article:published_time" content="2015-11-23T01:06:29.524Z" />
+    <meta property="article:modified_time" content="2015-11-23T01:06:29.523Z" />
+    
+    <meta name="twitter:card" content="content" />
+    <meta name="twitter:title" content="The Path to JavaScript Ninjutsu Pt I" />
+    <meta name="twitter:description" content="Here are a five things I think any beginner or intermediate JS developer can do today to become a better JS developer: Understand that functions are first-class objects in JavaScript. Know the difference between function declarations and function expressions, and..." />
+    <meta name="twitter:url" content="http://localhost:2368/the-path-to-javascript-ninjutsu-pt-i/" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "publisher": "mike wilcox",
+    "author": {
+        "@type": "Person",
+        "name": "Mike Wilcox",
+        "image": "http://localhost:2368//www.gravatar.com/avatar/24b41978e9a7a9fa51b8cb52bc0966b8?d=404&s=250",
+        "url": "http://localhost:2368/author/mike",
+        "sameAs": null
+    },
+    "headline": "The Path to JavaScript Ninjutsu Pt I",
+    "url": "http://localhost:2368/the-path-to-javascript-ninjutsu-pt-i/",
+    "datePublished": "2015-11-23T01:06:29.524Z",
+    "dateModified": "2015-11-23T01:06:29.523Z",
+    "description": "Here are a five things I think any beginner or intermediate JS developer can do today to become a better JS developer: Understand that functions are first-class objects in JavaScript. Know the difference between function declarations and function expressions, and"
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.5" />
+    <link rel="alternate" type="application/rss+xml" title="mike wilcox" href="../rss/index.html" />
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-XXXXXXXX-X'); // Paste your Google Analytics ID here.
+    ga('send', 'pageview');
+</script>
+</head>
+
+<body class="post-template">
+
+
+<header role='banner' class="site-head_digitus wrapper_digitus fade_digitus">
+        <a class="logo_digitus" href="../index.html"><img src="../content/images/2014/10/hubble-1.jpg" alt="mike wilcox" /></a>
+    <h1 class="blogtitle_digitus">
+        <a title="mike wilcox" href='../index.html'>
+            mike wilcox
+        </a>
+    </h1>
+</header>
+
+
+<main class="wrapper_digitus" role="main">
+    
+	
+    <article class="article_digitus">
+	
+		<header class="postheader_digitus">
+            <h1 class="posttitle_digitus">The Path to JavaScript Ninjutsu Pt I</h1>
+            <span>by</span><h4 class="authorname_digitus"><a href="http://localhost:2368/author/mike">Mike Wilcox</a></h4>
+            <hr class="pause" />
+			<ul>
+				<li><i class="fa fa-calendar"></i><time class="date_digitus" >Sunday 22 Nov 2015</time></li>
+                <li><i class="fa fa-comments"></i><a class="comments_digitus" href="index.html#disqus_thread" data-disqus-identifier="13">Comments</a></li>
+			</ul>
+		</header>
+	
+		<div class="postcontent_digitus">
+			<p>Here are a five things I think any beginner or intermediate JS developer can do today to become a better JS developer:</p>
+
+<ol>
+<li><p>Understand that <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions">functions are first-class objects</a> in JavaScript. Know the difference between <a href="https://javascriptweblog.wordpress.com/2010/07/06/function-declarations-vs-function-expressions/">function declarations and function expressions</a>, and how the JS compiler treats each of these (hoisting).</p></li>
+<li><p>Use <a href="http://cryto.net/~joepie91/blog/2015/05/04/functional-programming-in-javascript-map-filter-reduce/">map, filter, and reduce</a> when you need to transform some data. </p></li>
+<li><p>Consider using a linter for your project. <a href="http://eslint.org/">ESLint</a> or <a href="https://github.com/palantir/tslint">TSLint</a> are good choices for JS and TS projects. Linters are an easy way to establish code guidelines for a project and can prevent bugs.</p></li>
+<li><p>Use <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness">strict equality comparisons</a> (=== and !==).</p>
+
+<p><em>Strict equality compares two values for equality. Neither value is implicitly converted to some other value before being compared. If the values have different types, the values are considered unequal. Otherwise, if the values have the same type and are not numbers, they’re considered equal if they have the same value.</em></p></li>
+<li><p>Embrace coding in ES6. Whether you're using <a href="https://babeljs.io/">Babel</a> or <a href="http://www.typescriptlang.org/">TypeScript</a>, you can start writing in the next version of JavaScript today. Here is a <a href="https://github.com/lukehoban/es6features/blob/master/README.md">comprehensive list</a> of all the new features. </p>
+
+<p>Some of my favorite new ES6 features include:</p>
+
+<ul><li><a href="https://github.com/lukehoban/es6features/blob/master/README.md#destructuring">destructuring</a></li>
+<li><a href="https://github.com/lukehoban/es6features/blob/master/README.md#arrows">arrow functions</a></li>
+<li><a href="https://github.com/lukehoban/es6features/blob/master/README.md#modules">modules</a></li>
+<li><a href="https://github.com/lukehoban/es6features/blob/master/README.md#template-strings">template strings</a></li>
+<li><a href="https://github.com/lukehoban/es6features/blob/master/README.md#default--rest--spread">spread operator</a></li>
+<li><a href="https://github.com/lukehoban/es6features/blob/master/README.md#let--const">let + const</a></li></ul></li>
+</ol>
+		</div>
+	
+		<ol class="share_digitus">
+            <li>
+                <span>Share:</span>
+                <ul class="share-ikons_digitus">
+                    <li><a class="fa fa-twitter-square" target="_blank" href="http://twitter.com/share?text=The Path to JavaScript Ninjutsu Pt I&url=http://localhost:2368/the-path-to-javascript-ninjutsu-pt-i/"><span class="hidden_digitus">Twitter</span></a></li>
+                    <li><a class="fa fa-facebook-square" target="_blank" href="http://www.facebook.com/sharer.php?u=http://localhost:2368/the-path-to-javascript-ninjutsu-pt-i/"><span class="hidden_digitus">Facebook</span></a></li>
+                    <li><a class="fa fa-google-plus-square" target="_blank" href="https://plus.google.com/share?url=http://localhost:2368/the-path-to-javascript-ninjutsu-pt-i/"><span class="hidden_digitus">Google+</span></a></li>
+                </ul>
+            </li>
+            <li class="back_digitus"><a href="index.html"><i class="fa fa-level-up"></i><span>Back to top</span></a></li>
+		</ol>
+	
+    
+     <footer class="postfooter_digitus">
+         
+        
+         <address>
+				<div class="authorimage_digitus" style="background-image: url(http://www.gravatar.com/avatar/24b41978e9a7a9fa51b8cb52bc0966b8?d=404&amp;s=250)"></div>
+         
+                <ul>
+				    <li><h4 class="authorname_digitus"><a href="http://localhost:2368/author/mike">Mike Wilcox</a></h4></li>
+                    <li><p class="authorbio_digitus"></p></li>
+				    <li>  
+                    </li>
+				</ul>
+             </address>
+		</footer>
+	
+	</article>
+	
+	
+	<div id="disqus_thread" class="disqusbox_digitus">
+        
+    <script type="text/javascript">
+        
+        var disqus_shortname = 'example'; // required: replace example with your Disqus shortname
+        var disqus_identifier = '';
+        
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    
+</div>
+	
+	
+</main>
+<footer class="footer_digitus">
+	<ul>
+        <li>
+            <span class="tooltip_digitus">Subscribe!</span>
+            <a href="../rss/index.html" target="_blank">
+                <span class="fa fa-stack">
+                    <i class="fa fa-stop fa-stack-2x"></i>
+                    <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+            </a>
+        </li>
+
+        <li>
+            <span class="tooltip_digitus">Twitter</span>
+            <a href="https://twitter.com/subr0utine">
+                <span class="fa fa-stack">
+                    <i class="fa fa-stop fa-stack-2x"></i>
+                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                </span>
+            </a>
+        </li>
+
+        <li>
+            <span class="tooltip_digitus">Github</span>
+            <a href="https://github.com/mjw56">
+                <span class="fa fa-stack">
+                    <i class="fa fa-stop fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+            </a>
+        </li>
+
+	</ul>
+
+		<p>Made with <3<br/>
+		  Theme created by <a href="http://golem.io">golem.io</a> &bull; Proudly published with <a class="icon-ghost" href="http://tryghost.org" target="_blank">Ghost</a></p>
+</footer>
+
+<script src="../public/jquery.js"></script>
+
+<script type="text/javascript">
+
+    var disqus_shortname = 'example'; // required: replace example with your Disqus shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+
+<script type="text/javascript" src="../assets/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="../assets/js/index.js"></script>
+<script type="text/javascript" src="../assets/js/prism.js"></script>
+</body>
+</html>
