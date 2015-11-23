@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-<title>Publishing a TypeScript package to npm</title>
+<title>The Developers Guide to the Angular + TypeScript Galaxy</title>
 <link rel="shortcut icon" href="../assets/favicon.png">
 <meta name="description" content="" />
 
@@ -29,16 +29,16 @@
     
     <meta property="og:site_name" content="mike wilcox" />
     <meta property="og:type" content="article" />
-    <meta property="og:title" content="Publishing a TypeScript package to npm" />
-    <meta property="og:description" content=" Recently I tried my hand at publishing a package to npm that was written in TypeScript. TypeScript is a nice way to write JavaScript because it has a type system which gives you instant feedback as you write your code..." />
-    <meta property="og:url" content="http://localhost:2368/publishing-a-typescript-package-to-npm/" />
-    <meta property="article:published_time" content="2014-11-16T02:14:05.115Z" />
-    <meta property="article:modified_time" content="2014-11-16T02:42:27.528Z" />
+    <meta property="og:title" content="The Developers Guide to the Angular + TypeScript Galaxy" />
+    <meta property="og:description" content="Recently I wrote a tutorial for working with Angular 1.x and TypeScript. I wrote it for some colleagues who had no prior experience with either.  It describes all about the build process and how to setup everything. It goes..." />
+    <meta property="og:url" content="http://localhost:2368/the-developers-guide-to-the-angular-typescript-galaxy/" />
+    <meta property="article:published_time" content="2015-11-23T00:24:53.482Z" />
+    <meta property="article:modified_time" content="2015-11-23T00:28:48.841Z" />
     
     <meta name="twitter:card" content="content" />
-    <meta name="twitter:title" content="Publishing a TypeScript package to npm" />
-    <meta name="twitter:description" content=" Recently I tried my hand at publishing a package to npm that was written in TypeScript. TypeScript is a nice way to write JavaScript because it has a type system which gives you instant feedback as you write your code..." />
-    <meta name="twitter:url" content="http://localhost:2368/publishing-a-typescript-package-to-npm/" />
+    <meta name="twitter:title" content="The Developers Guide to the Angular + TypeScript Galaxy" />
+    <meta name="twitter:description" content="Recently I wrote a tutorial for working with Angular 1.x and TypeScript. I wrote it for some colleagues who had no prior experience with either.  It describes all about the build process and how to setup everything. It goes..." />
+    <meta name="twitter:url" content="http://localhost:2368/the-developers-guide-to-the-angular-typescript-galaxy/" />
     
     <script type="application/ld+json">
 {
@@ -52,11 +52,11 @@
         "url": "http://localhost:2368/author/mike",
         "sameAs": null
     },
-    "headline": "Publishing a TypeScript package to npm",
-    "url": "http://localhost:2368/publishing-a-typescript-package-to-npm/",
-    "datePublished": "2014-11-16T02:14:05.115Z",
-    "dateModified": "2014-11-16T02:42:27.528Z",
-    "description": " Recently I tried my hand at publishing a package to npm that was written in TypeScript. TypeScript is a nice way to write JavaScript because it has a type system which gives you instant feedback as you write your code"
+    "headline": "The Developers Guide to the Angular + TypeScript Galaxy",
+    "url": "http://localhost:2368/the-developers-guide-to-the-angular-typescript-galaxy/",
+    "datePublished": "2015-11-23T00:24:53.482Z",
+    "dateModified": "2015-11-23T00:28:48.841Z",
+    "description": "Recently I wrote a tutorial for working with Angular 1.x and TypeScript. I wrote it for some colleagues who had no prior experience with either.  It describes all about the build process and how to setup everything. It goes"
 }
     </script>
 
@@ -93,37 +93,32 @@
     <article class="article_digitus">
 	
 		<header class="postheader_digitus">
-            <h1 class="posttitle_digitus">Publishing a TypeScript package to npm</h1>
+            <h1 class="posttitle_digitus">The Developers Guide to the Angular + TypeScript Galaxy</h1>
             <span>by</span><h4 class="authorname_digitus"><a href="http://localhost:2368/author/mike">Mike Wilcox</a></h4>
             <hr class="pause" />
 			<ul>
-				<li><i class="fa fa-calendar"></i><time class="date_digitus" >Saturday 15 Nov 2014</time></li>
-                <li><i class="fa fa-comments"></i><a class="comments_digitus" href="index.html#disqus_thread" data-disqus-identifier="3">Comments</a></li>
+				<li><i class="fa fa-calendar"></i><time class="date_digitus" >Sunday 22 Nov 2015</time></li>
+                <li><i class="fa fa-comments"></i><a class="comments_digitus" href="index.html#disqus_thread" data-disqus-identifier="11">Comments</a></li>
 			</ul>
 		</header>
 	
 		<div class="postcontent_digitus">
-			<p><img src="../content/images/2014/11/npm_typescript.png" alt="alt" /></p>
+			<p>Recently I wrote a tutorial for working with Angular 1.x and TypeScript. I wrote it for some colleagues who had no prior experience with either. </p>
 
-<p>Recently I tried my hand at publishing a package to npm that was written in TypeScript. TypeScript is a nice way to write JavaScript because it has a type system which gives you instant feedback as you write your code and at compile time.  It's always nice to have that instant feedback as there are usually less surprises when you go to run your code in the browser. Another nice benefit is that you can start writing ES6-like code today! :D</p>
+<p>It describes all about the build process and how to setup everything. It goes commit by commit if you wanted to try replicating the same.</p>
 
-<p>My module is fairly simply as it is only one class with an external interface I use to define my query object. The module can be found <a href="https://github.com/mjw56/surfsup">here</a>. I am using <a href="http://gulpjs.com/">gulp</a> to automate my build process. I used <a href="https://www.npmjs.org/package/gulp-tsc">gulp-tsc</a> to compile the TypeScript in my gulp compile task. It is very straightforward and did the job well for this simple scenario. The only gotcha I ran into was how was my TypeScript going to compile itself before being sent off to the npm registry? The answer is in the <a href="https://www.npmjs.org/doc/misc/npm-scripts.html">scripts</a> property of the package.json. Inside of there we can do all sorts of awesome magic that will make sure our code is in the right state when a user wants to use our module in their code. Specifically for this use-case I used the prepublish property to run my gulp task to compile my TypeScript:</p>
+<p>You can find it <a href="https://www.gitbook.com/book/mjw56/the-developers-guide-to-the-angular-typescript-ga/details">here</a>.</p>
 
-<pre><code class="prettyprint javascript ">'scripts': {  
-    'prepublish': 'gulp compile'
-}
-</code></pre>
-
-<p>Now you're guaranteed that you'll be sending off valid JavaScript to the npm registry. Enjoy!</p>
+<p>Cheers</p>
 		</div>
 	
 		<ol class="share_digitus">
             <li>
                 <span>Share:</span>
                 <ul class="share-ikons_digitus">
-                    <li><a class="fa fa-twitter-square" target="_blank" href="http://twitter.com/share?text=Publishing a TypeScript package to npm&url=http://localhost:2368/publishing-a-typescript-package-to-npm/"><span class="hidden_digitus">Twitter</span></a></li>
-                    <li><a class="fa fa-facebook-square" target="_blank" href="http://www.facebook.com/sharer.php?u=http://localhost:2368/publishing-a-typescript-package-to-npm/"><span class="hidden_digitus">Facebook</span></a></li>
-                    <li><a class="fa fa-google-plus-square" target="_blank" href="https://plus.google.com/share?url=http://localhost:2368/publishing-a-typescript-package-to-npm/"><span class="hidden_digitus">Google+</span></a></li>
+                    <li><a class="fa fa-twitter-square" target="_blank" href="http://twitter.com/share?text=The Developers Guide to the Angular + TypeScript Galaxy&url=http://localhost:2368/the-developers-guide-to-the-angular-typescript-galaxy/"><span class="hidden_digitus">Twitter</span></a></li>
+                    <li><a class="fa fa-facebook-square" target="_blank" href="http://www.facebook.com/sharer.php?u=http://localhost:2368/the-developers-guide-to-the-angular-typescript-galaxy/"><span class="hidden_digitus">Facebook</span></a></li>
+                    <li><a class="fa fa-google-plus-square" target="_blank" href="https://plus.google.com/share?url=http://localhost:2368/the-developers-guide-to-the-angular-typescript-galaxy/"><span class="hidden_digitus">Google+</span></a></li>
                 </ul>
             </li>
             <li class="back_digitus"><a href="index.html"><i class="fa fa-level-up"></i><span>Back to top</span></a></li>
