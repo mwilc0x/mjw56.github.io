@@ -458,23 +458,6 @@ margin on the iframe, cause it breaks stuff. */
     font-size: 90%;
 }
 
-/* tooltip animation */
-
-.article_digitus > span:hover .tooltip_digitus {
-    -o-animation-name: fadeInLeftBig;
-    -o-animation-duration: 0.7s;
-    -ms-animation-name: fadeInLeftBig;
-    -ms-animation-duration: 0.7s;
-    -webkit-animation-name: fadeInLeftBig;
-    -webkit-animation-duration: 0.7s;
-    -moz-animation-name: fadeInLeftBig;
-    -moz-animation-duration: 0.7s;
-    animation-name: fadeInLeftBig;
-    animation-duration: 0.7s;
-    opacity: 1;
-    display: inline-block;
-}
-
 
  /* ==========================================================================
    					            5. Pagination
