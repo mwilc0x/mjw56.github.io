@@ -33,7 +33,7 @@
     <meta property="og:description" content="Redux-saga offers a new approach for doing async actions in redux applications through the use of Sagas. If you haven't heard of Sagas before it's ok. The concept of a Saga is not new, and can be traced back to..." />
     <meta property="og:url" content="http://localhost:2368/using-redux-saga-for-async-in-redux-apps/" />
     <meta property="article:published_time" content="2016-03-27T04:14:04.774Z" />
-    <meta property="article:modified_time" content="2016-03-27T04:14:04.772Z" />
+    <meta property="article:modified_time" content="2016-03-27T04:20:40.838Z" />
     
     <meta name="twitter:card" content="content" />
     <meta name="twitter:title" content="Async with redux-saga pt I" />
@@ -55,7 +55,7 @@
     "headline": "Async with redux-saga pt I",
     "url": "http://localhost:2368/using-redux-saga-for-async-in-redux-apps/",
     "datePublished": "2016-03-27T04:14:04.774Z",
-    "dateModified": "2016-03-27T04:14:04.772Z",
+    "dateModified": "2016-03-27T04:20:40.838Z",
     "description": "Redux-saga offers a new approach for doing async actions in redux applications through the use of Sagas. If you haven't heard of Sagas before it's ok. The concept of a Saga is not new, and can be traced back to"
 }
     </script>
@@ -126,7 +126,7 @@
 
 <p>First, let's define an <code>api</code> function which will just be responsible for making the request's to the server:</p>
 
-<pre><code class="js">export default function api(url, opts) {  
+<pre><code class="language-javascript">export default function api(url, opts) {  
   return fetch(url, opts)
     .then(function (resp) {
       return resp.json()
@@ -141,7 +141,7 @@
 
 <p>Now let's see what a <code>saga</code> looks like. Here we will first start with fetch todos...</p>
 
-<pre><code class="js">import * as ActionTypes from '../constants/ActionTypes'  
+<pre><code class="language-javascript">import * as ActionTypes from '../constants/ActionTypes'  
 import api from './api'  
 import { call, put } from 'redux-saga/effects'  
 import { takeLatest } from 'redux-saga'
@@ -182,7 +182,7 @@ export default function* watchFetchTodos() {
 
 <p>So that describes a single async workflow for a single operation in our TodoMVC app. That wasn't so bad was it? All of the other operations that can be done in this TodoMVC app can follow the same pattern as we just did for the <code>fetch-todos</code> example above. Now, how do we tie this all together and get the <code>sagas</code> turned on in our system? One way is we can export all of the sagas to one place and then export all of those as a single list. For the TodoMVC app, this is what it ended up looking like for me:</p>
 
-<pre><code class="js">export default function* watchMany() {  
+<pre><code class="language-javascript">export default function* watchMany() {  
   yield [
     fork(watchAddTodo),
     fork(watchEditTodo),
@@ -204,7 +204,7 @@ export default function* watchFetchTodos() {
 
 <p>Lastly, it will need to be configured into the central <code>store</code> using <code>createSagaMiddleware</code>:</p>
 
-<pre><code class="js">import { createStore, applyMiddleware } from 'redux'  
+<pre><code class="language-javascript">import { createStore, applyMiddleware } from 'redux'  
 import createSagaMiddleware from 'redux-saga'
 
 import rootReducer from '../reducers'  
@@ -229,7 +229,7 @@ export default function configureStore(initialState) {
 
 <p>One other cool thing I'd like to point out is how to fetch data on the first load of the application. I did this by adding a <code>bootstrap saga</code> which immediately dispatches the <code>fetchTodos</code> action:</p>
 
-<pre><code class="js">import { put } from 'redux-saga/effects'  
+<pre><code class="language-javascript">import { put } from 'redux-saga/effects'  
 import { fetchTodos } from '../actions'
 
 export default function* bootstrap() {  

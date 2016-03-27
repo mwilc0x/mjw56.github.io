@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[mike wilcox]]></title><description><![CDATA[mike wilcox]]></description><link>http://localhost:2368/</link><generator>Ghost 0.5</generator><lastBuildDate>Sun, 27 Mar 2016 04:14:40 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Async with redux-saga pt I]]></title><description><![CDATA[<p><a href="https://github.com/yelouafi/redux-saga">Redux-saga</a> offers a new approach for doing async actions in redux applications through the use of <code>Sagas</code>. If you haven't heard of <code>Sagas</code> before it's ok. The concept of a <code>Saga</code> is not new, and can be traced back to 1986 when it was <a href="https://www.cs.princeton.edu/research/techreps/TR-070-87">presented</a> at Princeton University by <code>Hector Garcia-Molina</code> and <code>Kenneth Salem</code>. In a nutshell, <em>a <code>Saga</code> is a long lived transaction that can be broken up into transactions and still executed in a unit.</em> Let's see what this means for us in the context of a <code>redux</code> app.</p>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[mike wilcox]]></title><description><![CDATA[mike wilcox]]></description><link>http://localhost:2368/</link><generator>Ghost 0.5</generator><lastBuildDate>Sun, 27 Mar 2016 04:20:57 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Async with redux-saga pt I]]></title><description><![CDATA[<p><a href="https://github.com/yelouafi/redux-saga">Redux-saga</a> offers a new approach for doing async actions in redux applications through the use of <code>Sagas</code>. If you haven't heard of <code>Sagas</code> before it's ok. The concept of a <code>Saga</code> is not new, and can be traced back to 1986 when it was <a href="https://www.cs.princeton.edu/research/techreps/TR-070-87">presented</a> at Princeton University by <code>Hector Garcia-Molina</code> and <code>Kenneth Salem</code>. In a nutshell, <em>a <code>Saga</code> is a long lived transaction that can be broken up into transactions and still executed in a unit.</em> Let's see what this means for us in the context of a <code>redux</code> app.</p>
 
 <p>The good news about this approach for <code>redux</code> apps is that it is minimally obstrusive to a pre-existing <code>redux</code> app. Or, maybe if you're thinking about the cost of re-factoring down the road, it's library-specific code is very isolated. The only places where <code>redux-saga</code> specific code will typically go in an existing <code>redux</code> app is wherever the <code>store</code> is configued (probably <code>configureStore.js</code>). Other than that, your <code>reducers</code> and <code>actions</code> should remain as-is and not have <code>redux-saga</code> specifics.</p>
 
@@ -23,7 +23,7 @@
 
 <p>First, let's define an <code>api</code> function which will just be responsible for making the request's to the server:</p>
 
-<pre><code class="js">export default function api(url, opts) {  
+<pre><code class="language-javascript">export default function api(url, opts) {  
   return fetch(url, opts)
     .then(function (resp) {
       return resp.json()
@@ -38,7 +38,7 @@
 
 <p>Now let's see what a <code>saga</code> looks like. Here we will first start with fetch todos...</p>
 
-<pre><code class="js">import * as ActionTypes from '../constants/ActionTypes'  
+<pre><code class="language-javascript">import * as ActionTypes from '../constants/ActionTypes'  
 import api from './api'  
 import { call, put } from 'redux-saga/effects'  
 import { takeLatest } from 'redux-saga'
@@ -79,7 +79,7 @@ export default function* watchFetchTodos() {
 
 <p>So that describes a single async workflow for a single operation in our TodoMVC app. That wasn't so bad was it? All of the other operations that can be done in this TodoMVC app can follow the same pattern as we just did for the <code>fetch-todos</code> example above. Now, how do we tie this all together and get the <code>sagas</code> turned on in our system? One way is we can export all of the sagas to one place and then export all of those as a single list. For the TodoMVC app, this is what it ended up looking like for me:</p>
 
-<pre><code class="js">export default function* watchMany() {  
+<pre><code class="language-javascript">export default function* watchMany() {  
   yield [
     fork(watchAddTodo),
     fork(watchEditTodo),
@@ -101,7 +101,7 @@ export default function* watchFetchTodos() {
 
 <p>Lastly, it will need to be configured into the central <code>store</code> using <code>createSagaMiddleware</code>:</p>
 
-<pre><code class="js">import { createStore, applyMiddleware } from 'redux'  
+<pre><code class="language-javascript">import { createStore, applyMiddleware } from 'redux'  
 import createSagaMiddleware from 'redux-saga'
 
 import rootReducer from '../reducers'  
@@ -126,7 +126,7 @@ export default function configureStore(initialState) {
 
 <p>One other cool thing I'd like to point out is how to fetch data on the first load of the application. I did this by adding a <code>bootstrap saga</code> which immediately dispatches the <code>fetchTodos</code> action:</p>
 
-<pre><code class="js">import { put } from 'redux-saga/effects'  
+<pre><code class="language-javascript">import { put } from 'redux-saga/effects'  
 import { fetchTodos } from '../actions'
 
 export default function* bootstrap() {  
