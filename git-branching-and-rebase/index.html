@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-<title>Git branching and rebase</title>
+<title>git rebase</title>
 <link rel="shortcut icon" href="../assets/favicon.png">
 <meta name="description" content="" />
 
@@ -29,14 +29,14 @@
     
     <meta property="og:site_name" content="mike wilcox" />
     <meta property="og:type" content="article" />
-    <meta property="og:title" content="Git branching and rebase" />
+    <meta property="og:title" content="git rebase" />
     <meta property="og:description" content="One of the earliest philosophies I learned when using git was to "commit early and often". A lot of times when I am working on building a feature from scratch, I will make a lot of commits as I am..." />
     <meta property="og:url" content="http://localhost:2368/git-branching-and-rebase/" />
     <meta property="article:published_time" content="2016-03-20T18:29:36.067Z" />
-    <meta property="article:modified_time" content="2016-03-20T18:29:38.141Z" />
+    <meta property="article:modified_time" content="2016-03-27T01:49:14.825Z" />
     
     <meta name="twitter:card" content="content" />
-    <meta name="twitter:title" content="Git branching and rebase" />
+    <meta name="twitter:title" content="git rebase" />
     <meta name="twitter:description" content="One of the earliest philosophies I learned when using git was to "commit early and often". A lot of times when I am working on building a feature from scratch, I will make a lot of commits as I am..." />
     <meta name="twitter:url" content="http://localhost:2368/git-branching-and-rebase/" />
     
@@ -52,10 +52,10 @@
         "url": "http://localhost:2368/author/mike",
         "sameAs": null
     },
-    "headline": "Git branching and rebase",
+    "headline": "git rebase",
     "url": "http://localhost:2368/git-branching-and-rebase/",
     "datePublished": "2016-03-20T18:29:36.067Z",
-    "dateModified": "2016-03-20T18:29:38.141Z",
+    "dateModified": "2016-03-27T01:49:14.825Z",
     "description": "One of the earliest philosophies I learned when using git was to \"commit early and often\". A lot of times when I am working on building a feature from scratch, I will make a lot of commits as I am"
 }
     </script>
@@ -93,7 +93,7 @@
     <article class="article_digitus">
 	
 		<header class="postheader_digitus">
-            <h1 class="posttitle_digitus">Git branching and rebase</h1>
+            <h1 class="posttitle_digitus">git rebase</h1>
             <span>by</span><h4 class="authorname_digitus"><a href="http://localhost:2368/author/mike">Mike Wilcox</a></h4>
             <hr class="pause" />
 			<ul>
@@ -110,7 +110,7 @@
 
 <p>1) Fork the repository that I want to work on to my personal git.</p>
 
-<p>2) clone this repo to my local hard drive to work on.</p>
+<p>2) Clone this repo to my local hard drive to work on.</p>
 
 <pre><code class="bash">$ git clone https://github.com/YOUR-USERNAME/YOUR-FORKED-REPOSITORY
 </code></pre>
@@ -159,7 +159,7 @@ pick 1b2d1f3 add tests
 # Note that empty commits are commented out
 </code></pre>
 
-<p>Here you can see that I have made five commits since I checked out <code>my-new-feature</code> branch. What I want to do is merge these five commits into once commit so that it is clean and gives one description of exactly what was done.</p>
+<p>Here you can see that I have made five commits since I checked out <code>my-new-feature</code> branch. What I want to do is merge these five commits into one commit so that it is clean and gives one description of exactly what was done.</p>
 
 <p>As you can see above, git tells us that we can use the squash command to use the commit, but meld it into the previous commit. You'll also notice that the commits are in ascending order, so the first commit which was made is at the top.</p>
 
@@ -241,7 +241,7 @@ Successfully rebased and updated refs/heads/my-new-feature.
             <li>
                 <span>Share:</span>
                 <ul class="share-ikons_digitus">
-                    <li><a class="fa fa-twitter-square" target="_blank" href="http://twitter.com/share?text=Git branching and rebase&url=http://localhost:2368/git-branching-and-rebase/"><span class="hidden_digitus">Twitter</span></a></li>
+                    <li><a class="fa fa-twitter-square" target="_blank" href="http://twitter.com/share?text=git rebase&url=http://localhost:2368/git-branching-and-rebase/"><span class="hidden_digitus">Twitter</span></a></li>
                     <li><a class="fa fa-facebook-square" target="_blank" href="http://www.facebook.com/sharer.php?u=http://localhost:2368/git-branching-and-rebase/"><span class="hidden_digitus">Facebook</span></a></li>
                     <li><a class="fa fa-google-plus-square" target="_blank" href="https://plus.google.com/share?url=http://localhost:2368/git-branching-and-rebase/"><span class="hidden_digitus">Google+</span></a></li>
                 </ul>

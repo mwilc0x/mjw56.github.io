@@ -1,5 +1,280 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[mike wilcox]]></title><description><![CDATA[mike wilcox]]></description><link>http://localhost:2368/</link><generator>Ghost 0.5</generator><lastBuildDate>Tue, 01 Dec 2015 03:10:50 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[The Path to JavaScript Ninjutsu Pt I]]></title><description><![CDATA[<p>Here are a five things I think any beginner or intermediate JS developer can do today to become a better JS developer:</p>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[mike wilcox]]></title><description><![CDATA[mike wilcox]]></description><link>http://localhost:2368/</link><generator>Ghost 0.5</generator><lastBuildDate>Sun, 27 Mar 2016 04:14:40 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Async with redux-saga pt I]]></title><description><![CDATA[<p><a href="https://github.com/yelouafi/redux-saga">Redux-saga</a> offers a new approach for doing async actions in redux applications through the use of <code>Sagas</code>. If you haven't heard of <code>Sagas</code> before it's ok. The concept of a <code>Saga</code> is not new, and can be traced back to 1986 when it was <a href="https://www.cs.princeton.edu/research/techreps/TR-070-87">presented</a> at Princeton University by <code>Hector Garcia-Molina</code> and <code>Kenneth Salem</code>. In a nutshell, <em>a <code>Saga</code> is a long lived transaction that can be broken up into transactions and still executed in a unit.</em> Let's see what this means for us in the context of a <code>redux</code> app.</p>
+
+<p>The good news about this approach for <code>redux</code> apps is that it is minimally obstrusive to a pre-existing <code>redux</code> app. Or, maybe if you're thinking about the cost of re-factoring down the road, it's library-specific code is very isolated. The only places where <code>redux-saga</code> specific code will typically go in an existing <code>redux</code> app is wherever the <code>store</code> is configued (probably <code>configureStore.js</code>). Other than that, your <code>reducers</code> and <code>actions</code> should remain as-is and not have <code>redux-saga</code> specifics.</p>
+
+<p>Now originally how you may have done async was through the middleware pattern and using <code>api</code> and <code>promise</code> middleware. There is also <code>redux-thunk</code> and <code>redux-promise</code> which are modules which give you this capability to dispatch from the action creator itself and handle the promise in the middleware before it is dispatched to the <code>store</code>. To be fair, I've actually liked this pattern and I have found it to be very useful and durable when used in a more real-world like application. But for the sake of learning and growing and trying new things, I wanted to see what <code>redux-saga</code> was all about, so I gave it a try.</p>
+
+<p>The app I used <code>redux-saga</code> on was a TodoMVC app. I wanted to make it feel a little more real-world like, so I added a fake data-store on the server using an npm package called <a href="https://www.npmjs.com/package/nedb">nedb</a>. It's actually pretty cool and it comes as an npm package with no other additional setup required, so that is nice. It feels very mongodb-ish if you've done any work with their NoSQL database.</p>
+
+<p>So essentially in a TodoMVC app, there's a certain amount of things you can do, those things are:</p>
+
+<ul>
+<li>fetch todos</li>
+<li>add todo</li>
+<li>edit todo</li>
+<li>delete todo</li>
+<li>complete todo</li>
+<li>complete all todos</li>
+<li>clear completed todos</li>
+</ul>
+
+<p>Since each of the above actions will be making calls to the server to save the information in the data-store, each action can have a defined set of action types which will be associated with the async process that happens. This might feel similar to how you are doing async action types already, where you have <code>REQUESTED</code>, <code>SUCCEEDED</code>, and <code>FAILED</code> action types.</p>
+
+<p>First, let's define an <code>api</code> function which will just be responsible for making the request's to the server:</p>
+
+<pre><code class="js">export default function api(url, opts) {  
+  return fetch(url, opts)
+    .then(function (resp) {
+      return resp.json()
+    })
+    .then(function (resp) {
+      return resp
+    })
+}
+</code></pre>
+
+<p><em>sagas/api.js</em></p>
+
+<p>Now let's see what a <code>saga</code> looks like. Here we will first start with fetch todos...</p>
+
+<pre><code class="js">import * as ActionTypes from '../constants/ActionTypes'  
+import api from './api'  
+import { call, put } from 'redux-saga/effects'  
+import { takeLatest } from 'redux-saga'
+
+function* fetchAllTodos(action) {  
+  try {
+    const todos = yield call(
+      api, 
+      '/fetch-todos', 
+      { 
+        method: 'POST', 
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: '' 
+      }
+    )
+
+    yield put({ type: ActionTypes.FETCH_TODOS_SUCCEEDED, todos })
+  } catch (e) {
+    yield put({ type: ActionTypes.FETCH_TODOS_FAILED, message: e.message })
+  }
+}
+
+export default function* watchFetchTodos() {  
+  yield* takeLatest(ActionTypes.FETCH_TODOS_REQUESTED, fetchAllTodos)
+}
+</code></pre>
+
+<p><em>sagas/fetch-todos.js</em></p>
+
+<p>There is a lot going on here, so we'll need to disect exactly how this works.</p>
+
+<p>The first thing I want to point out is that this is using generators which is the <code>function*</code> you see in the code. If you're not familiar with <code>generators</code>, you can read up on them <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*">here</a>.</p>
+
+<p>Next, there is an exported generator function <code>watchFetchTodos</code> that is doing just one thing. Remember when I said that the <code>sagas</code> are really the only place where you'll be using <code>redux-saga</code> specific features. Here is one of those places where we are using <code>takeLatest</code>. This is one of the <a href="http://yelouafi.github.io/redux-saga/docs/basics/UsingSagaHelpers.html">helper methods</a>. Essentially what it is going to do is continually monitor for the <code>FETCH_TODOS_REQUESTED</code> action to have been dispatched somewhere from the application code. The <code>takeLatest</code> here is just making sure that there are not concurrent tasks running for this same action type. If there already was one running which was the same <code>FETCH_TODOS_REQUESTED</code> and another <code>FETCH_TODOS_REQUESTED</code> was introduced to the system, the older one would be cancelled in favor of the latest one that entered. Now, if <code>watchFetchTodos</code> hears a request, it will invoke the <code>fetchAllTodos</code> function. Here it is going to use another <code>redux-saga</code> helper, <code>call</code> to do the asynchronous task of calling the api function we defined above with our endpoint and additional options we'd like to pass to it. The <code>const todos = yield call(...)</code> means that once the <code>call</code> is resolved, we should get a result back and stored into <code>todos</code>. Once this happens, the code in <code>fetchAllTodos</code> will continue executing where it left off which is to next invoke the <code>FETCH_TODOS_SUCCEEDED</code> action in case of a <code>SUCCESS</code> or <code>FETCH_TODOS_FAILED</code> in case of a <code>FAILURE</code>. Here we are using another helper method, <code>put</code>, which is analogous to <code>dispatch</code> in <code>redux</code> in that it will dispatch these actions to the store with passed data.</p>
+
+<p>So that describes a single async workflow for a single operation in our TodoMVC app. That wasn't so bad was it? All of the other operations that can be done in this TodoMVC app can follow the same pattern as we just did for the <code>fetch-todos</code> example above. Now, how do we tie this all together and get the <code>sagas</code> turned on in our system? One way is we can export all of the sagas to one place and then export all of those as a single list. For the TodoMVC app, this is what it ended up looking like for me:</p>
+
+<pre><code class="js">export default function* watchMany() {  
+  yield [
+    fork(watchAddTodo),
+    fork(watchEditTodo),
+    fork(watchFetchTodos),
+    fork(watchDeleteTodo),
+    fork(watchCompleteTodo),
+    fork(watchCompleteAllTodos),
+    fork(watchClearCompletedTodos),
+    fork(bootstrap)
+  ]
+}
+</code></pre>
+
+<p><em>sagas/index.js</em></p>
+
+<p>The <a href="http://yelouafi.github.io/redux-saga/docs/advanced/NonBlockingCalls.html">fork</a> function is another <code>redux-saga</code> helper: </p>
+
+<p>"To express non-blocking calls, the library provides another Effect: <code>fork</code>. When we <code>fork</code> a task, the task is started in the background and the caller can continue its flow without waiting for the forked task to terminate."</p>
+
+<p>Lastly, it will need to be configured into the central <code>store</code> using <code>createSagaMiddleware</code>:</p>
+
+<pre><code class="js">import { createStore, applyMiddleware } from 'redux'  
+import createSagaMiddleware from 'redux-saga'
+
+import rootReducer from '../reducers'  
+import sagas from '../sagas'
+
+export default function configureStore(initialState) {  
+  const sagaMiddleware = createSagaMiddleware(
+    sagas
+  )
+
+  const store = createStore(
+    rootReducer, 
+    initialState,
+    applyMiddleware(sagaMiddleware)
+  )
+
+  return store
+}
+</code></pre>
+
+<p><em>store/configureStore.js</em></p>
+
+<p>One other cool thing I'd like to point out is how to fetch data on the first load of the application. I did this by adding a <code>bootstrap saga</code> which immediately dispatches the <code>fetchTodos</code> action:</p>
+
+<pre><code class="js">import { put } from 'redux-saga/effects'  
+import { fetchTodos } from '../actions'
+
+export default function* bootstrap() {  
+  yield put(fetchTodos())
+}
+</code></pre>
+
+<p><em>sagas/bootstrap.js</em></p>
+
+<p>This is nice as no longer does the application need to do any fetching on initialization of the component tree like in <code>componentDidMount</code> if it does not want to. It is possible to let the <code>sagas</code> handle how to pre-fetch data using this approach.</p>
+
+<p>I hope this was helpful in showing the basics of how I added <code>redux-saga</code> to a TodoMVC app. If there was anything that was not clear or something that I could have explained better, or just any feedback in general, I would really appreciate hearing from you. So please let me know by <a href="mailto:mwilcox56@gmail.com">emailing me</a> or <a href="https://twitter.com/mjw56_">tweeting me</a>. The full source code for this is available on <a href="https://github.com/mjw56/todomvc-sagas-example">GitHub</a>.</p>
+
+<p>This is part one in what I plan to make a two part series. In the next series I will go into how to test sagas and also explore how routing can work with <code>redux-saga</code>.</p>
+
+<p>Cheers</p>]]></description><link>http://localhost:2368/using-redux-saga-for-async-in-redux-apps/</link><guid isPermaLink="false">618b4213-26cb-47ee-9e72-088b03ade9d2</guid><dc:creator><![CDATA[Mike Wilcox]]></dc:creator><pubDate>Sun, 27 Mar 2016 04:14:04 GMT</pubDate></item><item><title><![CDATA[git rebase]]></title><description><![CDATA[<p>One of the earliest philosophies I learned when using git was to "commit early and often". A lot of times when I am working on building a feature from scratch, I will make a lot of commits as I am adding new pieces. The nice part about this is the ability to quickly rollback in case something that was added didn't work out as planned. However, once a feature is complete, it might lead to a messy git history with a lot of commits that don't make a lot of sense to the person reviewing the changes.</p>
+
+<p>Luckily git has a tool called <a href="https://git-scm.com/docs/git-rebase">rebase</a>. This tool can be used to "squash" multiple commits into one. You can do this multiple times if necessary and group commits into a single commit that is more descriptive of the high level change which was made.</p>
+
+<p>Here is a basic strategy I like for working on a git repo:</p>
+
+<p>1) Fork the repository that I want to work on to my personal git.</p>
+
+<p>2) Clone this repo to my local hard drive to work on.</p>
+
+<pre><code class="bash">$ git clone https://github.com/YOUR-USERNAME/YOUR-FORKED-REPOSITORY
+</code></pre>
+
+<p>3) Create a new branch to work on a new feature so as not to disturb master</p>
+
+<pre><code class="bash">$ git checkout -b my-new-feature
+Switched to a new branch 'my-new-feature'  
+</code></pre>
+
+<p>4) Build out new feature, fix a bug, update documentation etc.</p>
+
+<p>Once you have completed making your changes, if you feel you have a lot of commits which you would like to converge into one, you can follow the following steps:</p>
+
+<pre><code>$ git rebase -i master
+</code></pre>
+
+<p>What this asking git to do is provide the list of commits which are new since checking out the branch from <code>master</code>.</p>
+
+<p><strong>Note</strong>: By default, git will open an interactive guide in the console. This might require that you are familiar with <code>vim</code> to do any editing. If you're more comfortable editing in a text editor, you can tell git to open any command prompts in the editor of you choice. Check out the official documentation to that <a href="https://help.github.com/articles/associating-text-editors-with-git/">here</a>.</p>
+
+<p>After running the command above, you'll get a screen which looks like this:</p>
+
+<pre><code class="bash">pick 21fd26d add search component  
+pick 717a3a0 add list component  
+pick 40bedc2 fix spelling  
+pick eeb6338 fix lint  
+pick 1b2d1f3 add tests
+
+# Rebase e99f870..1b2d1f3 onto e99f870 (5 command(s))
+#
+# Commands:
+# p, pick = use commit
+# r, reword = use commit, but edit the commit message
+# e, edit = use commit, but stop for amending
+# s, squash = use commit, but meld into previous commit
+# f, fixup = like "squash", but discard this commit's log message
+# x, exec = run command (the rest of the line) using shell
+#
+# These lines can be re-ordered; they are executed from top to bottom.
+#
+# If you remove a line here THAT COMMIT WILL BE LOST.
+#
+# However, if you remove everything, the rebase will be aborted.
+#
+# Note that empty commits are commented out
+</code></pre>
+
+<p>Here you can see that I have made five commits since I checked out <code>my-new-feature</code> branch. What I want to do is merge these five commits into one commit so that it is clean and gives one description of exactly what was done.</p>
+
+<p>As you can see above, git tells us that we can use the squash command to use the commit, but meld it into the previous commit. You'll also notice that the commits are in ascending order, so the first commit which was made is at the top.</p>
+
+<p>So we can squash all commits but the first one. You'll have to manually change the <code>pick</code> to <code>squash</code> or <code>s</code> for short. We could also use <code>fixup</code> or <code>f</code> which acts like <code>squash</code> but it removes the whole commit message. I want to keep the original commit message, so I will stick to <code>s</code> for now. Let's make the change:</p>
+
+<pre><code class="bash">pick 21fd26d add search component  
+s 717a3a0 add list component  
+s 40bedc2 fix spelling  
+s eeb6338 fix lint  
+s 1b2d1f3 add tests  
+</code></pre>
+
+<p>If you want to update the final commit message, don't worry, we'll be able to do that shortly. One other nice thing we can do is re-order the commits. So, if your list if very big, and you want to group similar commits into a single commit, you can re-order and squash them as necessary.</p>
+
+<p>Save your changes and close the interactive screen. You should be prompted with another screen asking you to confirm your changes:</p>
+
+<pre><code class="bash"># This is a combination of 5 commits.
+# The first commit's message is:
+add search component
+
+# This is the 2nd commit message:
+
+add list component
+
+# This is the 3rd commit message:
+
+fix spelling
+
+# This is the 4th commit message:
+
+fix lint
+
+# This is the 5th commit message:
+
+add tests
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# Date:      Sun Mar 20 14:04:52 2016 -0400
+#
+# rebase in progress; onto e99f870
+# You are currently editing a commit while rebasing branch 'my-new-feature' on 'e99f870'.
+#
+# Changes to be committed:
+#    new file:   list-component.js
+#    new file:   search-component.js
+#    new file:   tests.js
+#
+</code></pre>
+
+<p>Here is your opportunity to edit any commit messages you would like. I am going to edit the first commit message to give a more descriptive message of what all was done.</p>
+
+<pre><code class="bash"># This is a combination of 5 commits.
+# The first commit's message is:
+Add Search and List components. Add tests for Search and List.  
+</code></pre>
+
+<p>Now I am done, I save this change and exit the interactive session:</p>
+
+<pre><code class="bash"> $ git rebase -i master                                       [14:05:55]
+[detached HEAD 5fdad05] Add Search and List components. Add tests for Search and List.
+ Date: Sun Mar 20 14:04:52 2016 -0400
+ 3 files changed, 2 insertions(+)
+ create mode 100644 list-component.js
+ create mode 100644 search-component.js
+ create mode 100644 tests.js
+Successfully rebased and updated refs/heads/my-new-feature.  
+</code></pre>
+
+<p>Success! We've successfully merged multiple commits into one commit now. </p>
+
+<p>The next step is to push these local changes to the remote server. If you have not pushed any of these changes yet, a simple <code>git push origin my-new-feature</code> should suffice. However, if you have been pushing your changes over a period of time, you'll need to force push to erase the history and only show the new commits. <strong>WARNING!!!</strong> forcing a push can be very dangerous and can lead to overwriting history in the repository. You should only do this if you are working in a local branch which does not contain work that has been shared with other contributors. If you do force a push with commits that other contributors have been working on, you risk erasing their work or getting their branch out of sync. You've been warned! :)</p>
+
+<p>So now you can see that it's possible to clean up a messy commit history and provide nice, clean, descriptive messages. If you've never done this before, I encourage you to first try this out locally on a test repository by adding files and a bunch of commit messages. Then run the <code>rebase</code> command. If you're interested in learning about more in-depth features, check out <a href="https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History">Rewriting History</a> on the git documentation site.</p>]]></description><link>http://localhost:2368/git-branching-and-rebase/</link><guid isPermaLink="false">45f4081a-e870-42ab-be68-89b3c9d289cf</guid><dc:creator><![CDATA[Mike Wilcox]]></dc:creator><pubDate>Sun, 20 Mar 2016 18:29:36 GMT</pubDate></item><item><title><![CDATA[The Path to JavaScript Ninjutsu Pt I]]></title><description><![CDATA[<p>Here are a five things I think any beginner or intermediate JS developer can do today to become a better JS developer:</p>
 
 <ol>
 <li><p>Understand that <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions">functions are first-class objects</a> in JavaScript. Know the difference between <a href="https://javascriptweblog.wordpress.com/2010/07/06/function-declarations-vs-function-expressions/">function declarations and function expressions</a>, and how the JS compiler treats each of these (hoisting).</p></li>
